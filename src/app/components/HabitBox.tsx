@@ -4,6 +4,7 @@ import { StreakBadge } from "./StreakBadge";
 import MonthBox from "./MonthBox";
 import DoneButton from "./DoneButton";
 import Divider from "./Divider";
+import Image from "next/image";
 
 const HabitBox = () => {
   const [isDivVisible, setIsDivVisible] = useState(false);
@@ -25,36 +26,45 @@ const HabitBox = () => {
       />
       <DoneButton text={"Mark Done for Today"} />
       <Divider />
-      {/* <h1 className="text-2xl">Previous Months</h1> */}
 
-      <div className="collapse collapse-arrow bg-base-200">
-        <input
-          placeholder="adfs"
-          type="radio"
-          name="my-accordion-2"
-          checked={true}
-        />
-        <div
-          className="collapse-title text-xl font-medium"
-          onClick={() => setIsOpen(true)}
+      <div
+        className="flex bg-[#191e24] rounded-lg p-3 items-center hover:cursor-pointer"
+        onClick={() => setIsOpen((p) => !p)}
+      >
+        <h1 className="text-2xl mr-auto">Previous Months</h1>
+        {/* <svg
+          className={`w-4 h-4 text-white ${isOpen && "rotate-180"} transition ease-linear`}
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 14 8"
         >
-          Previous Months
-        </div>
-        <div className="collapse-content">
-          <MonthBox
-            daysDone={27}
-            totalDays={30}
-            monthName={`Month`}
-            dataTip={`22 July 2002`}
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"
           />
-          <MonthBox
-            daysDone={27}
-            totalDays={30}
-            monthName={`Month`}
-            dataTip={`22 July 2002`}
-          />
-        </div>
+        </svg> */}
       </div>
+
+      {isOpen && (
+        <>
+          <MonthBox
+            daysDone={27}
+            totalDays={30}
+            monthName={`Month`}
+            dataTip={`22 July 2002`}
+          />
+          <MonthBox
+            daysDone={27}
+            totalDays={30}
+            monthName={`Month`}
+            dataTip={`22 July 2002`}
+          />
+        </>
+      )}
     </div>
   );
 };
