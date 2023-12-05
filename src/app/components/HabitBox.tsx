@@ -32,7 +32,7 @@ const HabitBox = () => {
         onClick={() => setIsOpen((p) => !p)}
       >
         <h1 className="text-2xl mr-auto">Previous Months</h1>
-        {/* <svg
+        <svg
           className={`w-4 h-4 text-white ${isOpen && "rotate-180"} transition ease-linear`}
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
@@ -41,12 +41,12 @@ const HabitBox = () => {
         >
           <path
             stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
             d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"
           />
-        </svg> */}
+        </svg>
       </div>
 
       {isOpen && (
