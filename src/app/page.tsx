@@ -63,7 +63,7 @@ export default function Home() {
         {loading ? (
           <Loader size="lg" />
         ) : (
-          <div className="grid grid-cols-2 justify-center gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 justify-center gap-8">
             {habitDocs.map((habit: any) => {
               return (
                 <HabitBox setToast={setToast} key={habit.id} habit={habit} />
