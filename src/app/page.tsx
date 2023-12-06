@@ -46,7 +46,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-16 px-3">
       <Toast
         success={toastSucess}
         isOpen={isToastOpen}
