@@ -10,31 +10,29 @@ import {
   collection,
 } from "firebase/firestore";
 import { db } from "./utils/firebase";
+import Loading from "./components/Loading";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const [habitDocs, setHabitDocs] = useState<Habit[]>([]);
 
   useEffect(() => {
-    console.log(db);
+    setLoading(true);
     const habitsCollection = collection(db, "habits");
 
     // Subscribe to real-time updates using onSnapshot
-    const unsubscribe = onSnapshot(habitsCollection, (querySnapshot) => {
-      const allDocs:any = [];
+    const unsubscribe:any = onSnapshot(habitsCollection, (querySnapshot) => {
+      const allDocs: any = [];
 
-      // Loop through the documents in the collection
       querySnapshot.forEach((doc) => {
-        // Extract data and add document ID
-        allDocs.push({ ...doc.data(), id: doc.id });
+        allDocs.push({ ...doc.data(), id: doc.id } as Habit);
       });
 
-      // Do something with the array of documents (allDocs)
-      console.log(allDocs);
-    });
-    //     console.log(newItems);
+      setHabitDocs(allDocs);
+      setLoading(false);
 
-    //   });
-    //   return unsubscribe();
+      return unsubscribe();
+    });
   }, []);
 
   return (
@@ -46,11 +44,18 @@ export default function Home() {
 
         <HabitInput text={`Type New Habit`} />
 
-        <div className="grid grid-cols-2 justify-center gap-8">
+        {loading ? (
+          <Loading size="lg" />
+        ) : (
+          <div className="grid grid-cols-2 justify-center gap-8">
+            {habitDocs.map((habit: any) => {
+              return <HabitBox key={habit.id} habit={habit} />;
+            })}
+            {/* <HabitBox />
           <HabitBox />
-          <HabitBox />
-          <HabitBox />
-        </div>
+          <HabitBox /> */}
+          </div>
+        )}
       </div>
     </main>
   );

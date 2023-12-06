@@ -6,16 +6,13 @@ import DoneButton from "./DoneButton";
 import Divider from "./Divider";
 import Image from "next/image";
 
-const HabitBox = () => {
-  const [isDivVisible, setIsDivVisible] = useState(false);
+const HabitBox = ({ habit }: { habit: Habit }) => {
   const [isOpen, setIsOpen] = useState(false);
+  
 
-  const toggleDivVisibility = () => {
-    setIsDivVisible(!isDivVisible);
-  };
   return (
-    <div className="relative p-4 max-w-[400px] rounded-lg border-[#414141] border">
-      <HabitHeading habitName={`Habit`} streakLength={20} />
+    <div className="transition ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border">
+      <HabitHeading habitName={habit.habitName} streakLength={habit.streak} />
 
       <StreakBadge dataTip="Chad [Streak > 7 Days]" levelName={`chad`} />
       <MonthBox
@@ -24,7 +21,10 @@ const HabitBox = () => {
         monthName={`Month`}
         dataTip={`22 July 2002`}
       />
-      <DoneButton text={"Mark Done for Today"} />
+      <DoneButton
+        completedText="✅ Marked as Completed!"
+        defaultText="Mark Today as Completed"
+      />
       <Divider />
 
       <div
@@ -33,7 +33,9 @@ const HabitBox = () => {
       >
         <h1 className="text-2xl mr-auto">Previous Months</h1>
         <svg
-          className={`w-4 h-4 text-white ${isOpen && "rotate-180"} transition ease-linear`}
+          className={`w-4 h-4 text-white ${
+            isOpen && "rotate-180"
+          } transition ease-linear`}
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
