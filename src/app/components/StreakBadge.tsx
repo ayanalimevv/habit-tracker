@@ -1,18 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-export const StreakBadge = ({
-  dataTip,
-  levelName,
-}: {
-  dataTip: string;
-  levelName: string;
-}) => {
+export const StreakBadge = ({ streakLength }: { streakLength: number }) => {
+  const [level, setLevel] = useState("");
+  useEffect(() => {
+    function generateNamesByStreakLength(streakLength: number) {
+      let names = [];
+      for (let i = 0; i < streakLength; i++) {
+        const descriptor = getDescriptor(i);
+        const fullName = `${descriptor}`;
+        names.push(fullName);
+      }
+
+      return names;
+    }
+
+    function getDescriptor(index: number) {
+      const descriptors = [
+        "Newbie",
+        "Growing",
+        "Consistent",
+        "Committed",
+        "Alpha",
+        "Chad",
+      ];
+      const descriptorIndex =
+        index < 7
+          ? 0 // Newbie for <7 days
+          : index < 21
+          ? 1 // Growing for >7 days but <21 days
+          : index < 30
+          ? 2 // Consistent for 21 days
+          : index < 90
+          ? 3 // Committed for 30 days
+          : index < 180
+          ? 4
+          : 5; // Alpha for 3 months, Chad for 6 months
+      return descriptors[descriptorIndex] || "Chad"; // Use 'Legend' for undefined cases
+    }
+
+    // Example usage:
+    const streakLen = 180; // Example: 180 days
+    const namesForStreak: string =
+      generateNamesByStreakLength(streakLen)[streakLength];
+    streakLength >= 180 ? setLevel("Chad") : setLevel(namesForStreak);
+  }, []);
+
   return (
     <div
       className="tooltip absolute right-0 top-0 translate-x-[50%] translate-y-[-50%]"
-      data-tip={`Current Level : ${dataTip}`}
+      data-tip={`Current Level : ${level}`}
     >
-      <div className="badge badge-neutral mx-3">{levelName}</div>
+      <div className="badge badge-neutral mx-3">{`${level}`}</div>
     </div>
   );
 };

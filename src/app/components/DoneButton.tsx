@@ -1,4 +1,4 @@
-import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
+import { doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../utils/firebase";
 import { update } from "firebase/database";
@@ -6,9 +6,13 @@ import { update } from "firebase/database";
 const DoneButton = ({
   defaultText,
   completedText,
+  habitId,
+  setToast,
 }: {
   defaultText: string;
   completedText: string;
+  habitId: string;
+  setToast: (message: string, value: boolean, success: boolean) => void;
 }) => {
   const [status, setStatus] = useState("default");
   const [text, setText] = useState(defaultText);
@@ -20,45 +24,43 @@ const DoneButton = ({
   }, [status, defaultText, completedText]);
 
   useEffect(() => {
-    let checkCompletionforToday = async () => {
-      let todayDoc: any = (
-        await getDoc(doc(db, "habits", "m4daaQdrWdRVqAz7dYAS"))
-      ).data();
-      let today = new Date().toISOString().split("T")[0];
-      if (todayDoc.daysCompleted?.[`${today}`]) {
-        setStatus("completed");
-      }
+    const getHabitStatus = async (habitId: string) => {
+      let year = new Date().getFullYear();
+      let month = new Date().getMonth();
+      let day = new Date().getDate() - 1;
+
+      const habit: any = (await getDoc(doc(db, "habits", habitId))).data();
+
+      habit.daysCompleted[year][month][day]
+        ? setStatus("completed")
+        : setStatus("default");
     };
-    checkCompletionforToday();
-  }, []);
+    getHabitStatus(habitId);
+  }),
+    [];
 
   const updateCompletion = async (habitId: string) => {
     try {
-      // Fetch the habit document
       setStatus("loading");
       const habitDoc: any = doc(db, "habits", habitId);
 
-      let today = new Date().toISOString().split("T")[0];
-      console.log(today);
+      let year = new Date().getFullYear();
+      let month = new Date().getMonth();
+      let day = new Date().getDate() - 1;
 
-      if (habitDoc && !habitDoc.daysCompleted?.[`${today}`]) {
-        await updateDoc(habitDoc, {
-          [`daysCompleted.${today}`]: true,
-        });
-      }
-
-      // await updateDoc(habitDoc, {
-      //   daysCompleted: {},
-      // });
+      await updateDoc(habitDoc, {
+        [`daysCompleted.${year}.${month}.${day}`]: true,
+      });
 
       setStatus("completed");
+      setToast("Habit Marked as Completed for Today", true, true);
     } catch (error) {
       alert(error);
     }
   };
   return (
     <button
-      onClick={() => updateCompletion("m4daaQdrWdRVqAz7dYAS")}
+      onClick={() => updateCompletion(habitId)}
       className={`btn w-full mt-4 hover:scale-95`}
       disabled={status === "loading" || status === "completed"}
     >
