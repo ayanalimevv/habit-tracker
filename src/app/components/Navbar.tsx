@@ -1,13 +1,15 @@
-"use client";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { app, auth } from "../utils/firebase";
 import { getAuth, signOut } from "firebase/auth";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
 
-const Navbar = ({ navTitle }: { navTitle: string }) => {
-  const router = Router;
+const Navbar = ({
+  navTitle,
+  setToast,
+}: {
+  navTitle: string;
+  setToast: (message: string, setToastOpen: boolean, success: boolean) => void;
+}) => {
   const handleSignOut = () => {
     const auth = getAuth();
     signOut(auth)
@@ -15,9 +17,10 @@ const Navbar = ({ navTitle }: { navTitle: string }) => {
         router.push("/auth/login");
       })
       .catch((error) => {
-        console.log(error);
+        setToast(`${error}`, true, false);
       });
   };
+  const router = useRouter();
   return (
     <div className="navbar bg-black z-50 border-b-[1px] border-[#414141] fixed">
       <div className="flex-1">

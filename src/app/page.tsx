@@ -2,21 +2,12 @@
 import HabitInput from "./components/HabitInput";
 import { useEffect, useState } from "react";
 import HabitBox from "./components/HabitBox";
-import {
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  collection,
-  getDoc,
-} from "firebase/firestore";
-import { app, db } from "./utils/firebase";
+import { onSnapshot, collection } from "firebase/firestore";
+import { db } from "./utils/firebase";
 import Loader from "./components/Loader";
 import Toast from "./components/Toast";
 import Navbar from "./components/Navbar";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import Error from "next/error";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -25,7 +16,6 @@ export default function Home() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastSucess, setToastSucess] = useState(false);
 
-  const router = useRouter();
 
   // const getHabitsData = async (uid: string) => {
   //   let res = await getDoc(doc(db, "users", `user_${uid}`));
@@ -45,7 +35,7 @@ export default function Home() {
   //   try {
   //     const userDataArray = await Promise.all(habitPromises);
   //     console.log(userDataArray);
-      
+
   //     setHabitDocs(userDataArray);
   //   } catch (error: any) {
   //     console.error("Error fetching user data:", error.message);
@@ -103,7 +93,7 @@ export default function Home() {
         </div>
       ) : (
         <>
-          <Navbar navTitle={`HabitGPT`} />
+          <Navbar navTitle={`HabitGPT`} setToast={setToast} />
           <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-24 px-3">
             <Toast
               success={toastSucess}
