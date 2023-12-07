@@ -8,6 +8,7 @@ import {
   orderBy,
   query,
   collection,
+  getDoc,
 } from "firebase/firestore";
 import { app, db } from "./utils/firebase";
 import Loader from "./components/Loader";
@@ -15,6 +16,7 @@ import Toast from "./components/Toast";
 import Navbar from "./components/Navbar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import Error from "next/error";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -23,20 +25,48 @@ export default function Home() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastSucess, setToastSucess] = useState(false);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const router = useRouter();
 
-  useEffect(() => {
-    const auth = getAuth(app);
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid;
-      } else {
-        router.push("/auth/login");
-      }
-    });
-  }, [router]);
+  // const getHabitsData = async (uid: string) => {
+  //   let res = await getDoc(doc(db, "users", `user_${uid}`));
+  //   const habitPromises = (res.data() as any).habitsId.map(
+  //     async (habitId: string) => {
+  //       const habitDocRef = doc(collection(db, "habits"), habitId);
+  //       const habitDoc = await getDoc(habitDocRef);
+
+  //       if (habitDoc.exists()) {
+  //         return { id: habitId, data: habitDoc.data() };
+  //       } else {
+  //         // Handle the case where the document doesn't exist
+  //         return { id: habitId, data: null };
+  //       }
+  //     }
+  //   );
+  //   try {
+  //     const userDataArray = await Promise.all(habitPromises);
+  //     console.log(userDataArray);
+      
+  //     setHabitDocs(userDataArray);
+  //   } catch (error: any) {
+  //     console.error("Error fetching user data:", error.message);
+  //     // Handle the error appropriately
+  //     setHabitDocs([]);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const auth = getAuth(app);
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       const uid = user.uid;
+  //       // getHabitsData(uid);
+  //       // setLoading(false);
+  //     } else {
+  //       router.push("/auth/login");
+  //     }
+  //   });
+  // }, [router]);
+
   const setToast = (
     message: string,
     setToastOpen: boolean,
@@ -73,10 +103,7 @@ export default function Home() {
         </div>
       ) : (
         <>
-          <Navbar
-            navTitle={`HabitGPT`}
-            imageUrl={`https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg`}
-          />
+          <Navbar navTitle={`HabitGPT`} />
           <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-24 px-3">
             <Toast
               success={toastSucess}
