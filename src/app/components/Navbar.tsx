@@ -1,6 +1,10 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { app, auth } from "../utils/firebase";
+import { getAuth, signOut } from "firebase/auth";
+import Router from "next/router";
 
 const Navbar = ({
   navTitle,
@@ -9,6 +13,17 @@ const Navbar = ({
   navTitle: string;
   imageUrl: string;
 }) => {
+  const router = Router;
+  const handleSignOut = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        router.push("/auth/login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <div className="navbar bg-black z-50 border-b-[1px] border-[#414141] fixed">
       <div className="flex-1">
@@ -21,7 +36,7 @@ const Navbar = ({
           <div
             tabIndex={0}
             role="button"
-            className="btn btn-ghost btn-circle avatar bg-[#1d1d1d] rounded-lg flex justify-center items-center"
+            className="btn btn-ghost btn-circle avatar bg-[#1d1d1d] rounded-lg flex flex-row"
           >
             {/* <Image
                 alt="Tailwind CSS Navbar component"
@@ -29,7 +44,7 @@ const Navbar = ({
                 width={40}
                 height={40}
               /> */}
-            {false ? (
+            {imageUrl.trim() === "" ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="30"
@@ -43,9 +58,10 @@ const Navbar = ({
             ) : (
               <Image
                 alt="Tailwind CSS Navbar component"
-                src={`https://lh3.googleusercontent.com/a/ACg8ocKCSbkSwVECqedxYX20oL34hlDQivCg4M-YRI-lsg6KGdk=s360-c-no`}
-                width={30}
-                height={30}
+                src={imageUrl}
+                width={20}
+                height={20}
+                className="rounded-lg"
               />
             )}
           </div>
@@ -63,7 +79,7 @@ const Navbar = ({
               <a>Settings</a>
             </li> */}
             <li>
-              <span>Logout</span>
+              <span onClick={handleSignOut}>Logout</span>
             </li>
           </ul>
         </div>
