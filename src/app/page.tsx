@@ -14,20 +14,23 @@ import Loader from "./components/Loader";
 import Toast from "./components/Toast";
 
 export default function Home() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [habitDocs, setHabitDocs] = useState<Habit[]>([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastSucess, setToastSucess] = useState(false);
 
-  const setToast = (message: string, setToastOpen: boolean, success: boolean) => {
+  const setToast = (
+    message: string,
+    setToastOpen: boolean,
+    success: boolean
+  ) => {
     setIsToastOpen(setToastOpen);
     setToastMessage(message);
     setToastSucess(success);
   };
 
   useEffect(() => {
-    setLoading(true);
     const habitsCollection = collection(db, "habits");
 
     // Subscribe to real-time updates using onSnapshot
@@ -62,14 +65,20 @@ export default function Home() {
 
         {loading ? (
           <Loader size="lg" />
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 justify-center gap-8">
+        ) : habitDocs.length > 0 ? (
+          <div
+            className={`grid grid-cols-1 lg:grid-cols-${
+              habitDocs.length < 2 ? "1" : "2"
+            } justify-center gap-8`}
+          >
             {habitDocs.map((habit: any) => {
               return (
                 <HabitBox setToast={setToast} key={habit.id} habit={habit} />
               );
             })}
           </div>
+        ) : (
+          "No Habit to Show!"
         )}
       </div>
     </main>

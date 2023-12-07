@@ -23,8 +23,8 @@ const Toast = ({
     }
   }, [isOpen, setToast]);
   return isOpen ? (
-    <div className="toast transition">
-      <div className="alert relative overflow-hidden">
+    <div className="toast transition absolute top-0 left-0 w-fit z-50">
+      <div className="alert overflow-hidden flex">
         <div
           className="bg-slate-800 rounded-full p-1 hover:cursor-pointer"
           onClick={() => setToast("", false, false)}

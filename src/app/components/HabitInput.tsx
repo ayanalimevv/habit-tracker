@@ -31,13 +31,15 @@ const HabitInput = ({
   };
   return (
     <form className="flex my-6" onSubmit={handleFormSubmit}>
-      <input
-        type="text"
-        placeholder={text}
-        className="input input-bordered input-md w-full max-w-xs"
-        value={habitInput}
-        onChange={(e) => setHabitInput(e.target.value)}
-      />
+      <div>
+        <input
+          type="text"
+          placeholder={text}
+          className="input input-bordered input-md w-full max-w-xs"
+          value={habitInput}
+          onChange={(e) => setHabitInput(e.target.value)}
+        />
+      </div>
       <button type="submit" className="btn ml-4">
         +
       </button>

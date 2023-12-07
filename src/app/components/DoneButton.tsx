@@ -53,7 +53,7 @@ const DoneButton = ({
       });
 
       setStatus("completed");
-      setToast("Habit Marked as Completed for Today", true, true);
+      setToast("Marked Completed Successfully!", true, true);
     } catch (error) {
       alert(error);
     }
