@@ -55,7 +55,8 @@ const DoneButton = ({
       setStatus("completed");
       setToast("Marked Completed Successfully!", true, true);
     } catch (error) {
-      alert(error);
+      setToast(`${error}`, true, false);
+      setStatus("default");
     }
   };
   return (

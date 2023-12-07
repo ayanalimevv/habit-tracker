@@ -5,14 +5,7 @@ import MonthBox from "./MonthBox";
 import DoneButton from "./DoneButton";
 import Divider from "./Divider";
 import Image from "next/image";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  setDoc,
-} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import DeleteButton from "./DeleteButton";
 import Modal from "./Modal";

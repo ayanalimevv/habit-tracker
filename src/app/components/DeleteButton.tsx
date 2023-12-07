@@ -30,12 +30,15 @@ const DeleteButton = ({
 
   return (
     <button
-      onClick={() => (document.getElementById("my_modal_1") as any).showModal()}
-      //   onClick={() => deleteHabit(habitId)}
+      onClick={() => {
+        (document.getElementById(`my_modal_${habitId}`) as any).showModal();
+        // setToast(habitId, true, true)
+      }}
+      // onClick={() => setToast(habitId, true, true)}
       className={`btn w-full mt-4 hover:scale-95`}
     >
       {defaultText}
-      <dialog id="my_modal_1" className="modal">
+      <dialog id={`my_modal_${habitId}`} className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Are you Sure?</h3>
           <p className="py-4">
@@ -45,7 +48,12 @@ const DeleteButton = ({
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-outline mr-2">Close</button>
-              <button onClick={() => deleteHabit(habitId)} className="btn btn-error btn-outline">Confirm Delete</button>
+              <button
+                onClick={() => deleteHabit(habitId)}
+                className="btn btn-error btn-outline"
+              >
+                Confirm Delete
+              </button>
             </form>
           </div>
         </div>

@@ -31,6 +31,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    
     const habitsCollection = collection(db, "habits");
 
     // Subscribe to real-time updates using onSnapshot
