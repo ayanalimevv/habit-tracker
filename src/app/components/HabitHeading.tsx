@@ -10,11 +10,11 @@ export const HabitHeading = ({
 }) => {
   return (
     <div className="flex flex-col ">
-      <div className="flex items-center">
+      <div className="flex">
         <h1 className="text-2xl capitalize flex items-center mr-auto">
           {habitName}
         </h1>
-        <StreakBadge streakLength={streakLength} />
+        <StreakBadge streakLength={6} />
       </div>
       <h1>[Streak : {streakLength} Day]</h1>
     </div>

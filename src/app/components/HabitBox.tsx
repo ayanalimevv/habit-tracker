@@ -86,6 +86,12 @@ const HabitBox = ({
           <MonthBox month={new Date().getMonth() - 2} habitId={habit.id} />
         </>
       )}
+      <DoneButton
+        completedText="✅ Delete this Habit"
+        defaultText="🗑️ Delete this Habit"
+        habitId={habit.id}
+        setToast={setToast}
+      />
     </div>
   );
 };

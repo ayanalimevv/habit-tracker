@@ -26,30 +26,10 @@ const Toast = ({
     <div className="toast transition absolute top-0 left-0 w-fit z-50">
       <div className="alert overflow-hidden flex">
         <div
-          className="bg-slate-800 rounded-full p-1 hover:cursor-pointer"
+          className="bg-slate-800 rounded-full p-1 hover:cursor-pointer text-xs"
           onClick={() => setToast("", false, false)}
         >
-          {success ? (
-            "✅"
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 48 48"
-              width="16px"
-              height="16px"
-            >
-              <path
-                fill="#F44336"
-                d="M21.5 4.5H26.501V43.5H21.5z"
-                transform="rotate(45.001 24 24)"
-              />
-              <path
-                fill="#F44336"
-                d="M21.5 4.5H26.5V43.501H21.5z"
-                transform="rotate(135.008 24 24)"
-              />
-            </svg>
-          )}
+          {success ? "✅" : "❌"}
         </div>
         <span className="text-sm">{message}</span>
       </div>
