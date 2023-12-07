@@ -47,8 +47,6 @@ const HabitBox = ({
   return (
     <div className="transition ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border">
       <HabitHeading habitName={habit.habitName} streakLength={streak} />
-
-      <StreakBadge streakLength={streak} />
       <MonthBox month={new Date().getMonth()} habitId={habit.id} />
       <DoneButton
         completedText="✅ Marked as Completed!"

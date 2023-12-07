@@ -44,7 +44,7 @@ export default function Home() {
       setHabitDocs(allDocs);
       setLoading(false);
 
-      return unsubscribe();
+      return () => unsubscribe();
     });
   }, []);
 

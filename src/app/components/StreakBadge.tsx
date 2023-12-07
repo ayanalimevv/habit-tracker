@@ -47,10 +47,10 @@ export const StreakBadge = ({ streakLength }: { streakLength: number }) => {
 
   return (
     <div
-      className="tooltip absolute right-0 top-0 translate-x-[50%] translate-y-[-50%]"
+      className="tooltip"
       data-tip={`Current Level : ${level}`}
     >
-      <div className="badge badge-neutral mx-3">{`${level}`}</div>
+      <div className="badge badge-neutral hover:bg-opacity-80 hover:cursor-pointer">{`${level}`}</div>
     </div>
   );
 };

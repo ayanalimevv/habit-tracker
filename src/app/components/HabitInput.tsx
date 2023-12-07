@@ -11,6 +11,40 @@ const HabitInput = ({
 }) => {
   const [habitInput, setHabitInput] = useState("");
 
+  function getLastDateOfMonth(year: number, month: number) {
+    const firstDayOfNextMonth: any = new Date(year, month + 1, 1);
+    const lastDayOfMonth = new Date(firstDayOfNextMonth - 1);
+    return lastDayOfMonth.getDate();
+  }
+
+  // Function to create the daysCompleted object
+  function createDaysCompletedObject() {
+    const daysCompletedObject: any = {};
+
+    for (
+      let year = new Date().getFullYear();
+      year <= new Date().getFullYear() + 1;
+      year++
+    ) {
+      const yearObject: any = {};
+
+      for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+        const lastDayOfMonth = getLastDateOfMonth(year, monthIndex);
+
+        const monthObject: any = {};
+
+        for (let dayIndex = 0; dayIndex < lastDayOfMonth; dayIndex++) {
+          monthObject[dayIndex] = false;
+        }
+
+        yearObject[monthIndex] = monthObject;
+      }
+
+      daysCompletedObject[year] = yearObject;
+    }
+    return daysCompletedObject;
+  }
+
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (habitInput.trim() === "") {
@@ -20,13 +54,12 @@ const HabitInput = ({
     try {
       await addDoc(collection(db, "habits"), {
         habitName: habitInput,
-        streak: 0,
-        daysCompleted: {},
+        daysCompleted: createDaysCompletedObject(),
       });
 
       setHabitInput("");
     } catch (error) {
-      alert(error);
+      setToast(`${error}`, true, false);
     }
   };
   return (
