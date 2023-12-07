@@ -8,7 +8,7 @@ export const HabitHeading = ({
   streakLength: number;
 }) => {
   return (
-    <div className="flex items-center">
+    <div className="flex md:items-center flex-col md:flex-row">
       <h1 className="text-2xl capitalize flex items-center mr-auto">
         {habitName}
       </h1>
