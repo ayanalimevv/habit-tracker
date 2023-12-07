@@ -5,8 +5,18 @@ import GreenMonthBox from "./GreenMonthBox";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import Loader from "./Loader";
+import { unsubscribe } from "diagnostics_channel";
+import { setTokenAutoRefreshEnabled } from "firebase/app-check";
 
-const MonthBox = ({ habitId, month }: { habitId: string; month: number }) => {
+const MonthBox = ({
+  habitId,
+  month,
+  setToast,
+}: {
+  habitId: string;
+  month: number;
+  setToast: (message: string, value: boolean, success: boolean) => void;
+}) => {
   const [habitsData, setHabitsData] = useState<{ [key: number]: boolean }>({});
   const [loading, setLoading] = useState(true);
   const [completedDays, setCompletedDays] = useState(0);
@@ -41,37 +51,84 @@ const MonthBox = ({ habitId, month }: { habitId: string; month: number }) => {
 
   useEffect(() => {
     const getHabitsData = async (habitId: string) => {
-      const habit: any = (await getDoc(doc(db, "habits", habitId))).data();
+      try {
+        const habitDoc = doc(db, "habits", habitId);
 
-      // Check if habitsData is not null or undefined before accessing properties
-      const unsub = onSnapshot(doc(db, "habits", habitId), (doc: any): any => {
-        let currMonthObj: any = doc.data().daysCompleted[year][month];
+        // Fetch habit data
+        const habitSnapshot = await getDoc(habitDoc);
+        const habitData = habitSnapshot.data();
 
-        let totalDays = 0;
-        let completedDays = 0;
-        Object.entries(currMonthObj).forEach((entry: any) => {
-          if (entry[1]) completedDays++;
-          totalDays++;
+        if (!habitData) {
+          setToast("Habit not found", true, false);
+          return;
+        }
+
+        // Check if necessary data is present
+        if (
+          !(
+            habitData.daysCompleted &&
+            habitData.daysCompleted[year] &&
+            habitData.daysCompleted[year][month]
+          )
+        ) {
+          setToast("Data not found for the habit", true, false);
+          return;
+        }
+
+        // Fetch real-time updates
+        const unsub = onSnapshot(habitDoc, (doc: any) => {
+          const habitData = doc.data();
+
+          // Check if necessary data is present
+          if (
+            !(
+              habitData &&
+              habitData.daysCompleted &&
+              habitData.daysCompleted[year] &&
+              habitData.daysCompleted[year][month]
+            )
+          ) {
+            setToast("Something Went Wrong", true, false);
+            return;
+          }
+
+          const currMonthObj = habitData.daysCompleted[year][month];
+
+          // Calculate total and completed days
+          let totalDays = 0;
+          let completedDays = 0;
+
+          Object.values(currMonthObj).forEach((value: any) => {
+            totalDays++;
+            if (value) completedDays++;
+          });
+
+          // Update state
+          setCompletedDays(completedDays);
+          setTotalDays(totalDays);
         });
-        setCompletedDays(completedDays);
-        setTotalDays(totalDays)
-      });
 
-      // return unsub();
-      if (
-        habit &&
-        habit.daysCompleted &&
-        habit.daysCompleted[year] &&
-        habit.daysCompleted[year][month]
-      ) {
-        setHabitsData(habit.daysCompleted[year][month]);
-      } else {
-        setHabitsData({});
+        // Set habits data
+        if (
+          habitData.daysCompleted &&
+          habitData.daysCompleted[year] &&
+          habitData.daysCompleted[year][month]
+        ) {
+          setHabitsData(habitData.daysCompleted[year][month]);
+        } else {
+          setHabitsData({});
+        }
+
+        setLoading(false);
+        return () => unsub();
+      } catch (error) {
+        console.error("Error fetching habit data:", error);
+        setToast("Error fetching habit data", true, false);
       }
-      setLoading(false);
     };
+
     getHabitsData(habitId);
-  }, []);
+  }, [habitId, year, month, setToast]);
 
   return (
     <div className="mt-2 bg-[#1D1D1D] w-full p-2 rounded-lg hover:bg-[#0f0f0f] hover:cursor-pointer border border-black hover:border-white transition ease-out">

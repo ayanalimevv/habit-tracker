@@ -14,6 +14,8 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db } from "../utils/firebase";
+import DeleteButton from "./DeleteButton";
+import Modal from "./Modal";
 
 const HabitBox = ({
   habit,
@@ -31,23 +33,41 @@ const HabitBox = ({
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "habits", habit.id), (doc: any): any => {
-      let currMonthObj: any = doc.data().daysCompleted[year][month];
-      let streak = 0;
-      for (let i = day - 1; i >= 0; i--) {
-        if (!currMonthObj[i]) break;
-        streak++;
+      const habitData = doc.data();
+
+      if (
+        habitData &&
+        habitData.daysCompleted &&
+        habitData.daysCompleted[year] &&
+        habitData.daysCompleted[year][month]
+      ) {
+        const currMonthObj = habitData.daysCompleted[year][month];
+        let streak = 0;
+
+        for (let i = day - 1; i >= 0; i--) {
+          if (currMonthObj && !currMonthObj[i]) break;
+          streak++;
+        }
+
+        currMonthObj && currMonthObj[day] ? streak++ : null;
+        setStreak(streak);
+      } else {
+        // Handle the case where the necessary data is not present
+        setToast("No Habit Found.", true, false);
       }
-      currMonthObj[day] ? streak++ : null;
-      setStreak(streak);
     });
 
     return () => unsub();
-  }, [day, habit.id, month, year]);
+  }, [day, habit.id, month, year, setToast]);
 
   return (
     <div className="transition ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border">
       <HabitHeading habitName={habit.habitName} streakLength={streak} />
-      <MonthBox month={new Date().getMonth()} habitId={habit.id} />
+      <MonthBox
+        month={new Date().getMonth()}
+        habitId={habit.id}
+        setToast={setToast}
+      />
       <DoneButton
         completedText="✅ Marked as Completed!"
         defaultText="Mark Today as Completed"
@@ -55,7 +75,6 @@ const HabitBox = ({
         setToast={setToast}
       />
       <Divider />
-
       <div
         className="flex bg-[#191e24] rounded-lg p-3 items-center hover:cursor-pointer"
         onClick={() => setIsOpen((p) => !p)}
@@ -79,15 +98,21 @@ const HabitBox = ({
           />
         </svg>
       </div>
-
       {isOpen && (
         <>
-          <MonthBox month={new Date().getMonth() - 1} habitId={habit.id} />
-          <MonthBox month={new Date().getMonth() - 2} habitId={habit.id} />
+          <MonthBox
+            month={new Date().getMonth() - 1}
+            habitId={habit.id}
+            setToast={setToast}
+          />
+          <MonthBox
+            month={new Date().getMonth() - 2}
+            habitId={habit.id}
+            setToast={setToast}
+          />
         </>
       )}
-      <DoneButton
-        completedText="✅ Delete this Habit"
+      <DeleteButton
         defaultText="🗑️ Delete this Habit"
         habitId={habit.id}
         setToast={setToast}
