@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   getAuth,
   signInWithPopup,
@@ -8,10 +8,10 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { app, db } from "../../utils/firebase";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Toast from "@/app/components/Toast";
 import Loader from "@/app/components/Loader";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
