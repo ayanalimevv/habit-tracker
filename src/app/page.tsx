@@ -12,6 +12,7 @@ import {
 import { db } from "./utils/firebase";
 import Loader from "./components/Loader";
 import Toast from "./components/Toast";
+import Navbar from "./components/Navbar";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -31,7 +32,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    
     const habitsCollection = collection(db, "habits");
 
     // Subscribe to real-time updates using onSnapshot
@@ -50,38 +50,45 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-16 px-3">
-      <Toast
-        success={toastSucess}
-        isOpen={isToastOpen}
-        message={toastMessage}
-        setToast={setToast}
+    <>
+      <Navbar
+        navTitle={`HabitGPT`}
+        imageUrl={`https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg`}
       />
-      <div className="flex flex-col z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <h1 className="text-4xl uppercase text-center font-semibold">
-          Habit Tracker
-        </h1>
+      <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-24 px-3">
+        <Toast
+          success={toastSucess}
+          isOpen={isToastOpen}
+          message={toastMessage}
+          setToast={setToast}
+        />
 
-        <HabitInput text={`Type New Habit`} setToast={setToast} />
+        <div className="flex flex-col z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
+          <h1 className="text-4xl uppercase text-center font-semibold">
+            Habit Tracker
+          </h1>
 
-        {loading ? (
-          <Loader size="lg" />
-        ) : habitDocs.length > 0 ? (
-          <div
-            className={`grid grid-cols-1 lg:grid-cols-${
-              habitDocs.length < 2 ? "1" : "2"
-            } justify-center gap-8`}
-          >
-            {habitDocs.map((habit: any) => {
-              return (
-                <HabitBox setToast={setToast} key={habit.id} habit={habit} />
-              );
-            })}
-          </div>
-        ) : (
-          "No Habit to Show!"
-        )}
-      </div>
-    </main>
+          <HabitInput text={`Type New Habit`} setToast={setToast} />
+
+          {loading ? (
+            <Loader size="lg" />
+          ) : habitDocs.length > 0 ? (
+            <div
+              className={`grid grid-cols-1 lg:grid-cols-${
+                habitDocs.length < 2 ? "1" : "2"
+              } justify-center gap-8`}
+            >
+              {habitDocs.map((habit: any) => {
+                return (
+                  <HabitBox setToast={setToast} key={habit.id} habit={habit} />
+                );
+              })}
+            </div>
+          ) : (
+            "No Habit to Show!"
+          )}
+        </div>
+      </main>
+    </>
   );
 }

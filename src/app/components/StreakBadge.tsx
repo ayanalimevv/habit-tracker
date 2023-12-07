@@ -48,7 +48,7 @@ export const StreakBadge = ({ streakLength }: { streakLength: number }) => {
   return (
     <div
       className="tooltip"
-      data-tip={`Current Level : ${level}`}
+      data-tip={`Level : ${level}`}
     >
       <div className="badge badge-neutral hover:bg-opacity-80 hover:cursor-pointer">{`${level}`}</div>
     </div>
