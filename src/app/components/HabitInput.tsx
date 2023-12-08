@@ -1,13 +1,21 @@
 import { FormEventHandler, useState } from "react";
 import { db } from "../utils/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  arrayUnion,
+} from "firebase/firestore";
 
 const HabitInput = ({
   text,
   setToast,
+  uid,
 }: {
   text: string;
   setToast: (message: string, value: boolean, success: boolean) => void;
+  uid: string;
 }) => {
   const [habitInput, setHabitInput] = useState("");
 
@@ -52,11 +60,14 @@ const HabitInput = ({
       return;
     }
     try {
-      await addDoc(collection(db, "habits"), {
+      let habitDoc = await addDoc(collection(db, "habits"), {
         habitName: habitInput,
         daysCompleted: createDaysCompletedObject(),
       });
 
+      await updateDoc(doc(db, "users", `user_${uid}`), {
+        habitsId: arrayUnion(habitDoc.id),
+      });
       setHabitInput("");
     } catch (error) {
       setToast(`${error}`, true, false);
