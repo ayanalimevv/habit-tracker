@@ -45,7 +45,7 @@ export default function Home() {
           const habitDoc = await getDoc(habitDocRef);
 
           if (habitDoc.exists()) {
-            return { id: habitId, data: habitDoc.data() };
+            return { id: habitId, ...habitDoc.data() };
           } else {
             // Handle the case where the document doesn't exist
             return { id: habitId, data: null };
@@ -53,11 +53,12 @@ export default function Home() {
         }
       );
       const userDataArray = await Promise.all(habitPromises);
+      console.log(userDataArray);
 
       setHabitDocs(userDataArray);
     } catch (error: any) {
       console.error("Error fetching user data:", error.message);
-      // Handle the error appropriately
+      setToast(`${error.message}`, true, false);
       setHabitDocs([]);
     }
   };
