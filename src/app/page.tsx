@@ -34,7 +34,7 @@ export default function Home() {
         }, 3000);
       }
     });
-  }, [router]);
+  }, []);
 
   const getHabitsData = async (uid: string) => {
     try {
