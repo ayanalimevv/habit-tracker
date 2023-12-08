@@ -130,6 +130,7 @@ export default function Home() {
                   {habitDocs.map((habit: any) => {
                     return (
                       <HabitBox
+                        uid={uid}
                         setToast={setToast}
                         key={habit.id}
                         habit={habit}

@@ -1,27 +1,24 @@
-import {
-  deleteDoc,
-  doc,
-  getDoc,
-  increment,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import React from "react";
 import { db } from "../utils/firebase";
-import { update } from "firebase/database";
 
 const DeleteButton = ({
   defaultText,
   habitId,
   setToast,
+  uid,
 }: {
   defaultText: string;
   habitId: string;
   setToast: (message: string, value: boolean, success: boolean) => void;
+  uid: string;
 }) => {
   const deleteHabit = async (habitId: string) => {
     try {
       await deleteDoc(doc(db, "habits", habitId));
+      await updateDoc(doc(db, "users", `user_${uid}`), {
+        habitsId: arrayRemove(habitId),
+      });
       setToast("Habit Deleted Successfully!", true, true);
     } catch (error) {
       setToast(`${error}`, true, false);

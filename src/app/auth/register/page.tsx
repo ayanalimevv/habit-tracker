@@ -43,41 +43,52 @@ const Register: React.FC = () => {
     setToastSucess(success);
   };
 
-  const handleGoogleRegister = (e: any) => {
+  const handleGoogleRegister = async (e: any) => {
     setLoading(true);
     e.preventDefault();
 
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-      .then((result): any => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        setLoading(false);
-        router.push("/");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
 
-        if (errorCode && errorCode.includes("/")) {
-          const parts = errorCode.split("/");
-          const subParts = parts[1].split("-");
-          const formattedMessage = subParts
-            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ");
-          formattedMessage.trim() !== ""
-            ? setToast(formattedMessage, true, false)
-            : setToast(errorMessage, true, false);
-        } else {
-          // Handle the case where errorCode is undefined or doesn't contain a "/"
-          setToast(errorMessage, true, false);
-        }
-        setLoading(false);
+      const user = result.user;
+      const options: any = { day: "numeric", month: "short", year: "numeric" };
+      const formattedDate = new Date().toLocaleDateString("en-US", options);
+
+      await setDoc(doc(db, "users", `user_${user.uid}`), {
+        username: user.displayName,
+        email: user.email,
+        habitsId: [],
+        createdAt: formattedDate,
       });
+
+      setLoading(false);
+      router.push("/");
+    } catch (error: any) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+
+      if (errorCode && errorCode.includes("/")) {
+        const parts = errorCode.split("/");
+        const subParts = parts[1].split("-");
+        const formattedMessage = subParts
+          .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+        formattedMessage.trim() !== ""
+          ? setToast(formattedMessage, true, false)
+          : setToast(errorMessage, true, false);
+      } else {
+        // Handle the case where errorCode is undefined or doesn't contain a "/"
+        setToast(errorMessage, true, false);
+      }
+
+      setLoading(false);
+    }
   };
+
   const handleEmailRegister = async (e: any) => {
     try {
       setLoading(true);
@@ -102,6 +113,7 @@ const Register: React.FC = () => {
 
       await setDoc(doc(db, "users", `user_${user.uid}`), {
         username,
+        email,
         habitsId: [],
         createdAt: formattedDate,
       });

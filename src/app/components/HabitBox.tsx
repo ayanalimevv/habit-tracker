@@ -13,9 +13,11 @@ import Modal from "./Modal";
 const HabitBox = ({
   habit,
   setToast,
+  uid,
 }: {
   habit: Habit;
   setToast: (message: string, value: boolean, success: boolean) => void;
+  uid: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [streak, setStreak] = useState(0);
@@ -106,6 +108,7 @@ const HabitBox = ({
         </>
       )}
       <DeleteButton
+        uid={uid}
         defaultText="🗑️ Delete this Habit"
         habitId={habit.id}
         setToast={setToast}
