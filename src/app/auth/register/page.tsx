@@ -97,9 +97,13 @@ const Register: React.FC = () => {
         email,
         password
       );
+      const options: any = { day: "numeric", month: "short", year: "numeric" };
+      const formattedDate = new Date().toLocaleDateString("en-US", options);
+
       await setDoc(doc(db, "users", `user_${user.uid}`), {
-        name: username,
+        username,
         habitsId: [],
+        createdAt: formattedDate,
       });
 
       setToast("Successfully Registered!", true, true);
