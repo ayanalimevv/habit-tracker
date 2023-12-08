@@ -9,6 +9,7 @@ import Toast from "./components/Toast";
 import Navbar from "./components/Navbar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import Footer from "./components/Footer";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -141,6 +142,7 @@ export default function Home() {
               )}
             </div>
           </main>
+          <Footer />
         </>
       )}
     </>
