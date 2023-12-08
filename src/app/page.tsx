@@ -53,7 +53,7 @@ export default function Home() {
         }
       );
       const userDataArray = await Promise.all(habitPromises);
-      console.log(userDataArray);
+      console.log(userDataArray.length);
 
       setHabitDocs(userDataArray);
     } catch (error: any) {
