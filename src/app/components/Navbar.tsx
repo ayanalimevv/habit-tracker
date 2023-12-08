@@ -1,17 +1,22 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { app, db } from "../utils/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const Navbar = ({
   navTitle,
   setToast,
+  uid,
 }: {
   navTitle: string;
   setToast: (message: string, setToastOpen: boolean, success: boolean) => void;
+  uid: string;
 }) => {
+  const [user, setUser] = useState<any>(null);
   const handleSignOut = () => {
-    const auth = getAuth();
+    const auth = getAuth(app);
     signOut(auth)
       .then(() => {
         router.push("/auth/login");
@@ -20,6 +25,17 @@ const Navbar = ({
         setToast(`${error}`, true, false);
       });
   };
+
+  useEffect(() => {
+    const getUserdata = async (uid: string) => {
+      let res = await getDoc(doc(db, "users", `user_${uid}`));
+      console.log(res.data());
+
+      setUser(res.data());
+    };
+    getUserdata(uid);
+  }, []);
+
   const router = useRouter();
   return (
     <div className="navbar bg-black z-50 border-b-[1px] border-[#414141] fixed">
@@ -57,17 +73,29 @@ const Navbar = ({
             tabIndex={0}
             className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-[#1d1d1d] rounded-lg w-52"
           >
-            {/* <li> */}
-            {/* <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
+            <h1 className="p-2">{`Hi, ${user?.username}`}</h1>
+            <p className="p-2">{`Member Since ${user?.createdAt}`} </p>
             <li>
-              <a>Settings</a>
-            </li> */}
-            <li>
-              <span onClick={handleSignOut}>Logout</span>
+              <span onClick={handleSignOut} className="p-2">
+                Logout
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="ml-[.5px] bi bi-box-arrow-right"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+                  />
+                </svg>
+              </span>
             </li>
           </ul>
         </div>
