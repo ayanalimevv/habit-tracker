@@ -99,7 +99,7 @@ export default function Home() {
         </div>
       ) : (
         <>
-          <Navbar navTitle={`HabitGPT`} setToast={setToast} />
+          <Navbar uid={uid} navTitle={`HabitGPT`} setToast={setToast} />
           <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-24 px-3">
             <Toast
               success={toastSucess}

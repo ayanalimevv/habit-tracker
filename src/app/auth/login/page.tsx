@@ -14,7 +14,8 @@ import Toast from "@/app/components/Toast";
 import Loader from "@/app/components/Loader";
 
 const Login: React.FC = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -30,10 +31,10 @@ const Login: React.FC = () => {
       if (user) {
         router.push("/");
         setTimeout(() => {
-          setLoading(false);
+          setPageLoading(false);
         }, 2000);
       } else {
-        setLoading(false);
+        setPageLoading(false);
       }
     });
   }, [router]);
@@ -51,10 +52,14 @@ const Login: React.FC = () => {
   const handleMailLogin = (e: any) => {
     e.preventDefault();
     setLoading(true);
+    if (email.trim() === "" || password === "") {
+      setToast("Enter value in all fields!", true, false);
+      setLoading(false);
+      return;
+    }
     const auth = getAuth(app);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
         setToast("Logged In Successfully!", true, true);
         setLoading(false);
@@ -118,7 +123,7 @@ const Login: React.FC = () => {
 
   return (
     <>
-      {loading ? (
+      {pageLoading ? (
         <Loader size="lg" />
       ) : (
         <>
