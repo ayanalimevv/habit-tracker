@@ -2,11 +2,12 @@
 import HabitInput from "./components/HabitInput";
 import { useEffect, useState } from "react";
 import HabitBox from "./components/HabitBox";
-import { onSnapshot, collection } from "firebase/firestore";
-import { db } from "./utils/firebase";
+import { onSnapshot, collection, getDoc, doc } from "firebase/firestore";
+import { app, db } from "./utils/firebase";
 import Loader from "./components/Loader";
 import Toast from "./components/Toast";
 import Navbar from "./components/Navbar";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -15,47 +16,51 @@ export default function Home() {
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastSucess, setToastSucess] = useState(false);
+  const [uid, setUid] = useState("");
 
+  const router = useRouter();
+  useEffect(() => {
+    const auth = getAuth(app);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        setUid(uid);
+        getHabitsData(uid);
+      } else {
+        router.push("/auth/login");
+        setTimeout(() => {
+          setLoading(false);
+        }, 3000);
+      }
+    });
+  }, [router]);
 
-  // const getHabitsData = async (uid: string) => {
-  //   let res = await getDoc(doc(db, "users", `user_${uid}`));
-  //   const habitPromises = (res.data() as any).habitsId.map(
-  //     async (habitId: string) => {
-  //       const habitDocRef = doc(collection(db, "habits"), habitId);
-  //       const habitDoc = await getDoc(habitDocRef);
+  const getHabitsData = async (uid: string) => {
+    try {
+      let res = await getDoc(doc(db, "users", `user_${uid}`));
 
-  //       if (habitDoc.exists()) {
-  //         return { id: habitId, data: habitDoc.data() };
-  //       } else {
-  //         // Handle the case where the document doesn't exist
-  //         return { id: habitId, data: null };
-  //       }
-  //     }
-  //   );
-  //   try {
-  //     const userDataArray = await Promise.all(habitPromises);
-  //     console.log(userDataArray);
+      const habitPromises = (res.data() as any).habitsId.map(
+        async (habitId: string) => {
+          const habitDocRef = doc(collection(db, "habits"), habitId);
+          const habitDoc = await getDoc(habitDocRef);
 
-  //     setHabitDocs(userDataArray);
-  //   } catch (error: any) {
-  //     console.error("Error fetching user data:", error.message);
-  //     // Handle the error appropriately
-  //     setHabitDocs([]);
-  //   }
-  // };
+          if (habitDoc.exists()) {
+            return { id: habitId, data: habitDoc.data() };
+          } else {
+            // Handle the case where the document doesn't exist
+            return { id: habitId, data: null };
+          }
+        }
+      );
+      const userDataArray = await Promise.all(habitPromises);
 
-  // useEffect(() => {
-  //   const auth = getAuth(app);
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       const uid = user.uid;
-  //       // getHabitsData(uid);
-  //       // setLoading(false);
-  //     } else {
-  //       router.push("/auth/login");
-  //     }
-  //   });
-  // }, [router]);
+      setHabitDocs(userDataArray);
+    } catch (error: any) {
+      console.error("Error fetching user data:", error.message);
+      // Handle the error appropriately
+      setHabitDocs([]);
+    }
+  };
 
   const setToast = (
     message: string,
@@ -70,7 +75,6 @@ export default function Home() {
   useEffect(() => {
     const habitsCollection = collection(db, "habits");
 
-    // Subscribe to real-time updates using onSnapshot
     const unsubscribe: any = onSnapshot(habitsCollection, (querySnapshot) => {
       const allDocs: any = [];
 
@@ -107,7 +111,11 @@ export default function Home() {
                 Habit Tracker
               </h1>
 
-              <HabitInput text={`Type New Habit`} setToast={setToast} />
+              <HabitInput
+                text={`Type New Habit`}
+                setToast={setToast}
+                uid={uid}
+              />
 
               {loading ? (
                 <Loader size="lg" />
