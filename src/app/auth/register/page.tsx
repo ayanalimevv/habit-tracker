@@ -278,7 +278,7 @@ const Register: React.FC = () => {
             </button>
           </div>
 
-          <div className="divider">OR</div>
+          {/* <div className="divider">OR</div>
           <button
             onClick={handleGoogleRegister}
             className="btn"
@@ -301,7 +301,7 @@ const Register: React.FC = () => {
                 Register with Google
               </>
             )}
-          </button>
+          </button> */}
         </form>
       </div>
     </>

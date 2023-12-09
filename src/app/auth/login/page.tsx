@@ -204,7 +204,7 @@ const Login: React.FC = () => {
                 </button>
               </div>
 
-              <div className="divider">OR</div>
+              {/* <div className="divider">OR</div>
               <button onClick={handleLogin} className="btn" disabled={loading}>
                 {loading ? (
                   <Loader size="lg" />
@@ -223,7 +223,7 @@ const Login: React.FC = () => {
                     Login with Google
                   </>
                 )}
-              </button>
+              </button> */}
             </form>
           </div>
         </>
