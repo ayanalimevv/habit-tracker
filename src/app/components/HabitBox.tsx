@@ -26,34 +26,35 @@ const HabitBox = ({
   const month = new Date().getMonth();
   const day = new Date().getDate() - 1;
 
-  useEffect(() => {
-    const unsub = onSnapshot(doc(db, "habits", habit.id), (doc: any): any => {
-      const habitData = doc.data();
+  // useEffect(() => {
+  //   // const unsub = onSnapshot(doc(db, "users", `user_${uid}`), (doc: any): any => {
+  //   //   const habitData = doc.data();
+  //   //   console.log(habitData.habitsId);
 
-      if (
-        habitData &&
-        habitData.daysCompleted &&
-        habitData.daysCompleted[year] &&
-        habitData.daysCompleted[year][month]
-      ) {
-        const currMonthObj = habitData.daysCompleted[year][month];
-        let streak = 0;
+  //   //   // if (
+  //   //   //   habitData &&
+  //   //   //   habitData.daysCompleted &&
+  //   //   //   habitData.daysCompleted[year] &&
+  //   //   //   habitData.daysCompleted[year][month]
+  //   //   // ) {
+  //   //   //   const currMonthObj = habitData.daysCompleted[year][month];
+  //   //   //   let streak = 0;
 
-        for (let i = day - 1; i >= 0; i--) {
-          if (currMonthObj && !currMonthObj[i]) break;
-          streak++;
-        }
+  //   //   //   for (let i = day - 1; i >= 0; i--) {
+  //   //   //     if (currMonthObj && !currMonthObj[i]) break;
+  //   //   //     streak++;
+  //   //   //   }
 
-        currMonthObj && currMonthObj[day] ? streak++ : null;
-        setStreak(streak);
-      } else {
-        // Handle the case where the necessary data is not present
-        setToast("No Habit Found.", true, false);
-      }
-    });
+  //   //   //   currMonthObj && currMonthObj[day] ? streak++ : null;
+  //   //   //   setStreak(streak);
+  //   //   // } else {
+  //   //   //   // Handle the case where the necessary data is not present
+  //   //   //   setToast("No Habit Found.", true, false);
+  //   //   // }
+  //   // });
 
-    return () => unsub();
-  }, [day, habit.id, month, year, setToast]);
+  //   return () => unsub();
+  // }, [day, habit.id, month, year, setToast]);
 
   return (
     <div className="transition ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border">

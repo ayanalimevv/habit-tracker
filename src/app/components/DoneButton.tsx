@@ -30,10 +30,18 @@ const DoneButton = ({
       let day = new Date().getDate() - 1;
 
       const habit: any = (await getDoc(doc(db, "habits", habitId))).data();
-
-      habit.daysCompleted[year][month][day]
-        ? setStatus("completed")
-        : setStatus("default");
+      if (
+        habit &&
+        habit.daysCompleted &&
+        habit.daysCompleted[year] &&
+        habit.daysCompleted[year][month] &&
+        habit.daysCompleted[year][month][day]
+      ) {
+        setStatus("completed");
+      } else {
+        // Either habit or some nested property is undefined
+        setStatus("default");
+      }
     };
     getHabitStatus(habitId);
   }),
