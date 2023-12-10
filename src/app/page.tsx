@@ -148,8 +148,8 @@ export default function Home() {
                 <Loader size="lg" />
               ) : habitDocs.length > 0 ? (
                 <div
-                  className={`grid grid-cols-1 md:grid-cols-${
-                    habitDocs.length < 2 ? "1" : "2"
+                  className={`grid ${
+                    habitDocs.length < 2 ? "md:grid-cols-1" : "md:grid-cols-2"
                   } justify-center gap-8`}
                 >
                   {habitDocs.map((habit: any) => {
