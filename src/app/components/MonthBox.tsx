@@ -17,7 +17,9 @@ const MonthBox = ({
   month: number;
   setToast: (message: string, value: boolean, success: boolean) => void;
 }) => {
-  const [habitsData, setHabitsData] = useState<{ [key: number]: boolean }>({});
+  const [habitsData, setHabitsData] = useState<{
+    [key: number]: { isDone: boolean; note: string };
+  }>({});
   const [loading, setLoading] = useState(true);
   const [completedDays, setCompletedDays] = useState(0);
   const [totalDays, setTotalDays] = useState(0);
@@ -115,6 +117,7 @@ const MonthBox = ({
           habitData.daysCompleted[year][month]
         ) {
           setHabitsData(habitData.daysCompleted[year][month]);
+          console.log(habitData.daysCompleted[year][month]);
         } else {
           setHabitsData({});
         }
@@ -148,11 +151,15 @@ const MonthBox = ({
                 <div
                   key={key}
                   className="tooltip"
-                  data-tip={`${parseInt(key) + 1} ${getMonthName(
-                    month
-                  )} ${year}`}
+                  data-tip={
+                    habitsData[key as any].note
+                      ? `[${habitsData[key as any].note}] ${
+                          parseInt(key) + 1
+                        } ${getMonthName(month)} ${year}`
+                      : `${parseInt(key) + 1} ${getMonthName(month)} ${year}`
+                  }
                 >
-                  {(habitsData[key as any] as boolean) ? (
+                  {habitsData[key as any] ? (
                     <GreenMonthBox />
                   ) : (
                     <BrownMonthBox />
