@@ -95,16 +95,16 @@ const HabitBox = ({
       </div>
       {isOpen && (
         <>
-          <MonthBox
-            month={new Date().getMonth() - 1}
-            habitId={habit.id}
-            setToast={setToast}
-          />
-          <MonthBox
-            month={new Date().getMonth() - 2}
-            habitId={habit.id}
-            setToast={setToast}
-          />
+          {Array.from({ length: 2 }, (_, index) => {
+            return (
+              <MonthBox
+                month={new Date().getMonth() - index}
+                habitId={habit.id}
+                key={habit.id}
+                setToast={setToast}
+              />
+            );
+          })}
         </>
       )}
       <DeleteButton

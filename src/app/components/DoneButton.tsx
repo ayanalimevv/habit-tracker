@@ -2,6 +2,7 @@ import { doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../utils/firebase";
 import { update } from "firebase/database";
+import Modal from "./Modal";
 
 const DoneButton = ({
   defaultText,
@@ -16,6 +17,11 @@ const DoneButton = ({
 }) => {
   const [status, setStatus] = useState("default");
   const [text, setText] = useState(defaultText);
+  const [note, setNote] = useState("");
+
+  const handleSetNote = (text: string) => {
+    setNote(text);
+  };
 
   useEffect(() => {
     if (status === "loading") setText("");
@@ -57,7 +63,8 @@ const DoneButton = ({
       let day = new Date().getDate() - 1;
 
       await updateDoc(habitDoc, {
-        [`daysCompleted.${year}.${month}.${day}`]: true,
+        [`daysCompleted.${year}.${month}.${day}.isDone`]: true,
+        [`daysCompleted.${year}.${month}.${day}.note`]: note,
       });
 
       setStatus("completed");
@@ -69,7 +76,9 @@ const DoneButton = ({
   };
   return (
     <button
-      onClick={() => updateCompletion(habitId)}
+      onClick={() =>
+        (document.getElementById(`done_modal_${habitId}`) as any).showModal()
+      }
       className={`btn w-full mt-4 hover:scale-95`}
       disabled={status === "loading" || status === "completed"}
     >
@@ -77,6 +86,16 @@ const DoneButton = ({
       {status === "loading" ? (
         <span className="loading loading-infinity loading-sm"></span>
       ) : null}
+      <Modal
+        id={`done_modal_${habitId}`}
+        btnColor="accent"
+        isTextArea={true}
+        btnText="Mark as Completed"
+        paragraphText="Add a Note with Habit [Optional]"
+        topHeading="Are you Sure?"
+        handleOnConfirm={() => updateCompletion(habitId)}
+        handleSetNote={handleSetNote}
+      />
     </button>
   );
 };

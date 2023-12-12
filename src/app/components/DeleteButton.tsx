@@ -1,6 +1,7 @@
 import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import React from "react";
 import { db } from "../utils/firebase";
+import Modal from "./Modal";
 
 const DeleteButton = ({
   defaultText,
@@ -13,7 +14,7 @@ const DeleteButton = ({
   setToast: (message: string, value: boolean, success: boolean) => void;
   uid: string;
 }) => {
-  const deleteHabit = async (habitId: string) => {
+  const deleteHabit = async (habitId: string, attempt = 1) => {
     try {
       await deleteDoc(doc(db, "habits", habitId));
       await updateDoc(doc(db, "users", `user_${uid}`), {
@@ -21,40 +22,32 @@ const DeleteButton = ({
       });
       setToast("Habit Deleted Successfully!", true, true);
     } catch (error) {
-      setToast(`${error}`, true, false);
+      if (attempt < 3) {
+        setTimeout(() => deleteHabit(habitId, attempt + 1), 1000);
+      } else {
+        setToast(`${error}`, true, false);
+      }
     }
   };
 
   return (
     <button
       onClick={() => {
-        (document.getElementById(`my_modal_${habitId}`) as any).showModal();
-        // setToast(habitId, true, true)
+        (document.getElementById(`delete_modal_${habitId}`) as any).showModal();
       }}
-      // onClick={() => setToast(habitId, true, true)}
       className={`btn w-full mt-4 hover:scale-95`}
     >
       {defaultText}
-      <dialog id={`my_modal_${habitId}`} className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Are you Sure?</h3>
-          <p className="py-4">
-            You will not be able to retrieve this habit once deleted.
-          </p>
-          <div className="modal-action">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn btn-outline mr-2">Close</button>
-              <button
-                onClick={() => deleteHabit(habitId)}
-                className="btn btn-error btn-outline"
-              >
-                Confirm Delete
-              </button>
-            </form>
-          </div>
-        </div>
-      </dialog>
+
+      <Modal
+        id={`delete_modal_${habitId}`}
+        btnColor="error"
+        btnText="Confirm Delete"
+        paragraphText="You will not be able to retrieve this habit once deleted."
+        topHeading="Are you Sure?"
+        handleOnConfirm={() => deleteHabit(habitId)}
+        isTextArea={false}
+      />
     </button>
   );
 };
