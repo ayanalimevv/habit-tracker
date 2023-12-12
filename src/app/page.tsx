@@ -2,7 +2,7 @@
 import HabitInput from "./components/HabitInput";
 import { useEffect, useState } from "react";
 import HabitBox from "./components/HabitBox";
-import { onSnapshot, collection, getDoc, doc } from "firebase/firestore";
+import { onSnapshot, getDoc, doc } from "firebase/firestore";
 import { app, db } from "./utils/firebase";
 import Loader from "./components/Loader";
 import Toast from "./components/Toast";
