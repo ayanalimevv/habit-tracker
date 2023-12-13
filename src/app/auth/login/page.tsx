@@ -90,32 +90,35 @@ const Login: React.FC = () => {
   const handleGoogleLogin = async (e: any) => {
     setLoading(true);
     e.preventDefault();
+    console.log("inside func");
 
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
     try {
+      console.log("inside try");
+
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
-      // const token = credential?.accessToken;
 
       const user = result.user;
 
       let userDoc = await getDoc(doc(db, "users", `user_${user.uid}`));
-      if (userDoc.exists()) {
-        setLoading(false);
-        router.push("/");
-        return;
+
+      if (userDoc.exists() !== true) {
+        const options: any = {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        };
+        const formattedDate = new Date().toLocaleDateString("en-US", options);
+
+        await setDoc(doc(db, "users", `user_${user.uid}`), {
+          username: user.displayName,
+          email: user.email,
+          habitsId: [],
+          createdAt: formattedDate,
+        });
       }
-
-      const options: any = { day: "numeric", month: "short", year: "numeric" };
-      const formattedDate = new Date().toLocaleDateString("en-US", options);
-
-      await setDoc(doc(db, "users", `user_${user.uid}`), {
-        username: user.displayName,
-        email: user.email,
-        habitsId: [],
-        createdAt: formattedDate,
-      });
 
       setLoading(false);
       router.push("/");
