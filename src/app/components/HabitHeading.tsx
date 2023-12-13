@@ -14,7 +14,7 @@ export const HabitHeading = ({
         <h1 className="text-2xl capitalize flex items-center mr-auto">
           {habitName}
         </h1>
-        <StreakBadge streakLength={6} />
+        <StreakBadge streakLength={streakLength} />
       </div>
       <h1>[Streak : {streakLength} Day]</h1>
     </div>

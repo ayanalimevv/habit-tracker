@@ -4,6 +4,7 @@ import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { app, db } from "../utils/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import Image from "next/image";
 
 const Navbar = ({
   navTitle,
@@ -52,11 +53,14 @@ const Navbar = ({
             className="btn btn-ghost btn-circle avatar bg-[#1d1d1d] rounded-lg flex flex-row"
           >
             {/* <Image
-                alt="Tailwind CSS Navbar component"
-                src={imageUrl}
-                width={40}
-                height={40}
-              /> */}
+              alt="Tailwind CSS Navbar component"
+              src={
+                "https://firebasestorage.googleapis.com/v0/b/habit-tracker-12666.appspot.com/o/Android%20Small%20-%208.png?alt=media&token=a73802f5-315f-46eb-8f1e-8994dd6c6d3d"
+              }
+              width={40}
+              height={40}
+              className="rounded-lg"
+            /> */}
 
             <svg
               xmlns="http://www.w3.org/2000/svg"

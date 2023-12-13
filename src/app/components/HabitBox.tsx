@@ -40,14 +40,13 @@ const HabitBox = ({
         let streak = 0;
 
         for (let i = day - 1; i >= 0; i--) {
-          if (currMonthObj && !currMonthObj[i]) break;
-          streak++;
+          if (currMonthObj[i] && !currMonthObj[i].isDone) break;
+          else streak++;
         }
 
-        currMonthObj && currMonthObj[day] ? streak++ : null;
+        currMonthObj && currMonthObj[day].isDone ? streak++ : null;
         setStreak(streak);
       } else {
-        // Handle the case where the necessary data is not present
         setToast("Unable Fetching Streak.", true, false);
       }
     });
@@ -56,7 +55,7 @@ const HabitBox = ({
   }, [day, habit.id, month, year, setToast]);
 
   return (
-    <div className="transition ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border">
+    <div className="hover:cursor-pointer ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border">
       <HabitHeading habitName={habit.habitName} streakLength={streak} />
       <MonthBox
         month={new Date().getMonth()}
@@ -64,14 +63,14 @@ const HabitBox = ({
         setToast={setToast}
       />
       <DoneButton
-        completedText="✅ Marked as Completed!"
-        defaultText="Mark Today as Completed"
+        completedText="↩️ Undo Completion!"
+        defaultText="✅ Mark Today as Completed"
         habitId={habit.id}
         setToast={setToast}
       />
       <Divider />
       <div
-        className="flex bg-[#191e24] rounded-lg p-3 items-center hover:cursor-pointer"
+        className="flex bg-[#191e24] rounded-lg p-3 items-center hover:cursor-pointer bg-opacity-50"
         onClick={() => setIsOpen((p) => !p)}
       >
         <h1 className="text-2xl mr-auto">Previous Months</h1>

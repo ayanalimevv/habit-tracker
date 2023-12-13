@@ -35,7 +35,7 @@ const DeleteButton = ({
       onClick={() => {
         (document.getElementById(`delete_modal_${habitId}`) as any).showModal();
       }}
-      className={`btn w-full mt-4 hover:scale-95`}
+      className={`btn w-full mt-4 hover:scale-[.98] bg-opacity-50 hover:bg-opacity-70`}
     >
       {defaultText}
 

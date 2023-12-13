@@ -1,6 +1,6 @@
 "use client";
 import HabitInput from "./components/HabitInput";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HabitBox from "./components/HabitBox";
 import { onSnapshot, getDoc, doc } from "firebase/firestore";
 import { app, db } from "./utils/firebase";
@@ -10,6 +10,7 @@ import Navbar from "./components/Navbar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Footer from "./components/Footer";
+import { motion, useInView } from "framer-motion";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -152,14 +153,16 @@ export default function Home() {
                     habitDocs.length < 2 ? "md:grid-cols-1" : "md:grid-cols-2"
                   } justify-center gap-8`}
                 >
-                  {habitDocs.map((habit: any) => {
+                  {habitDocs.map((habit: any, i: number) => {
                     return (
-                      <HabitBox
-                        uid={uid}
-                        setToast={setToast}
+                      <motion.div
                         key={habit.id}
-                        habit={habit}
-                      />
+                        initial={{ opacity: 0, x: -10, y: -10 }}
+                        animate={{ opacity: 1, x: 0, y: 0 }}
+                        transition={{ duration: 0.5, delay: i * 0.2 }}
+                      >
+                        <HabitBox uid={uid} setToast={setToast} habit={habit} />
+                      </motion.div>
                     );
                   })}
                 </div>

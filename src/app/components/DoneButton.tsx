@@ -41,7 +41,8 @@ const DoneButton = ({
         habit.daysCompleted &&
         habit.daysCompleted[year] &&
         habit.daysCompleted[year][month] &&
-        habit.daysCompleted[year][month][day]
+        habit.daysCompleted[year][month][day] &&
+        habit.daysCompleted[year][month][day].isDone
       ) {
         setStatus("completed");
       } else {
@@ -74,18 +75,49 @@ const DoneButton = ({
       setStatus("default");
     }
   };
+
+  const undoCompletion = async (habitId: string) => {
+    try {
+      // console.log("undo");
+
+      setStatus("loading");
+      const habitDoc: any = doc(db, "habits", habitId);
+
+      let year = new Date().getFullYear();
+      let month = new Date().getMonth();
+      let day = new Date().getDate() - 1;
+
+      await updateDoc(habitDoc, {
+        [`daysCompleted.${year}.${month}.${day}.isDone`]: false,
+        [`daysCompleted.${year}.${month}.${day}.note`]: "",
+      });
+
+      setStatus("default");
+      setToast("Undo Successfully!", true, true);
+    } catch (error) {
+      setToast(`${error}`, true, false);
+      setStatus("completed");
+    }
+  };
+
   return (
     <button
       onClick={() =>
-        (document.getElementById(`done_modal_${habitId}`) as any).showModal()
+        status === "completed"
+          ? (
+              document.getElementById(`update_modal_${habitId}`) as any
+            ).showModal()
+          : (
+              document.getElementById(`done_modal_${habitId}`) as any
+            ).showModal()
       }
-      className={`btn w-full mt-4 hover:scale-95`}
-      disabled={status === "loading" || status === "completed"}
+      className={`btn w-full mt-4 hover:scale-[.98] bg-opacity-50 hover:bg-opacity-70`}
+      disabled={status === "loading"}
     >
-      {status === "loading" ? "" : text}
-      {status === "loading" ? (
+      {status === "loading" && (
         <span className="loading loading-infinity loading-sm"></span>
-      ) : null}
+      )}
+      {text}
       <Modal
         id={`done_modal_${habitId}`}
         btnColor="accent"
@@ -94,6 +126,16 @@ const DoneButton = ({
         paragraphText="Add a Note with Habit [Optional]"
         topHeading="Are you Sure?"
         handleOnConfirm={() => updateCompletion(habitId)}
+        handleSetNote={handleSetNote}
+      />
+      <Modal
+        id={`update_modal_${habitId}`}
+        btnColor="error"
+        isTextArea={false}
+        btnText="Undo Completion!"
+        paragraphText="You can't revert action once undone."
+        topHeading="Are you Sure?"
+        handleOnConfirm={() => undoCompletion(habitId)}
         handleSetNote={handleSetNote}
       />
     </button>

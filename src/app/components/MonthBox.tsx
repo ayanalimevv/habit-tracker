@@ -5,8 +5,6 @@ import GreenMonthBox from "./GreenMonthBox";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import Loader from "./Loader";
-import { unsubscribe } from "diagnostics_channel";
-import { setTokenAutoRefreshEnabled } from "firebase/app-check";
 
 const MonthBox = ({
   habitId,
@@ -100,9 +98,9 @@ const MonthBox = ({
           let totalDays = 0;
           let completedDays = 0;
 
-          Object.values(currMonthObj).forEach((value: any) => {
+          Object.keys(currMonthObj).forEach((key: any) => {
             totalDays++;
-            if (value) completedDays++;
+            if (currMonthObj[key]?.isDone) completedDays++;
           });
 
           // Update state
@@ -117,7 +115,6 @@ const MonthBox = ({
           habitData.daysCompleted[year][month]
         ) {
           setHabitsData(habitData.daysCompleted[year][month]);
-          console.log(habitData.daysCompleted[year][month]);
         } else {
           setHabitsData({});
         }
@@ -134,7 +131,7 @@ const MonthBox = ({
   }, [habitId, year, month, setToast]);
 
   return (
-    <div className="mt-2 bg-[#1D1D1D] w-full p-2 rounded-lg hover:bg-[#0f0f0f] hover:cursor-pointer border border-black hover:border-white transition ease-out">
+    <div className="mt-2 bg-[#191e24] bg-opacity-50 border border-white border-opacity-20 w-full p-2 rounded-lg  hover:cursor-pointer transition ease-out">
       <MonthHeading
         daysDone={completedDays}
         totalDays={totalDays}
@@ -159,7 +156,7 @@ const MonthBox = ({
                       : `${parseInt(key) + 1} ${getMonthName(month)} ${year}`
                   }
                 >
-                  {habitsData[key as any] ? (
+                  {habitsData[key as any].isDone ? (
                     <GreenMonthBox />
                   ) : (
                     <BrownMonthBox />

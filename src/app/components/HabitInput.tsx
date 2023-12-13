@@ -42,7 +42,10 @@ const HabitInput = ({
         const monthObject: any = {};
 
         for (let dayIndex = 0; dayIndex < lastDayOfMonth; dayIndex++) {
-          monthObject[dayIndex] = false;
+          monthObject[dayIndex] = {
+            isDone: false,
+            note: "",
+          };
         }
 
         yearObject[monthIndex] = monthObject;
