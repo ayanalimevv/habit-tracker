@@ -8,10 +8,11 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
-import { app } from "../../utils/firebase";
+import { app, db } from "../../utils/firebase";
 import { useRouter } from "next/navigation";
 import Toast from "@/app/components/Toast";
 import Loader from "@/app/components/Loader";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -86,39 +87,58 @@ const Login: React.FC = () => {
       });
   };
 
-  const handleLogin = () => {
+  const handleGoogleLogin = async (e: any) => {
+    setLoading(true);
+    e.preventDefault();
+
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
 
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        // The signed-in user info.
-        const user = result.user;
+      const user = result.user;
+
+      let userDoc = await getDoc(doc(db, "users", `user_${user.uid}`));
+      if (userDoc.exists()) {
         setLoading(false);
         router.push("/");
-      })
-      .catch((error: any) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        return;
+      }
 
-        if (errorCode && errorCode.includes("/")) {
-          const parts = errorCode.split("/");
-          const subParts = parts[1].split("-");
-          const formattedMessage = subParts
-            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ");
-          formattedMessage.trim() !== ""
-            ? setToast(formattedMessage, true, false)
-            : setToast(errorMessage, true, false);
-        } else {
-          // Handle the case where errorCode is undefined or doesn't contain a "/"
-          setToast(errorMessage, true, false);
-        }
-        setLoading(false);
+      const options: any = { day: "numeric", month: "short", year: "numeric" };
+      const formattedDate = new Date().toLocaleDateString("en-US", options);
+
+      await setDoc(doc(db, "users", `user_${user.uid}`), {
+        username: user.displayName,
+        email: user.email,
+        habitsId: [],
+        createdAt: formattedDate,
       });
+
+      setLoading(false);
+      router.push("/");
+    } catch (error: any) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+
+      if (errorCode && errorCode.includes("/")) {
+        const parts = errorCode.split("/");
+        const subParts = parts[1].split("-");
+        const formattedMessage = subParts
+          .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+        formattedMessage.trim() !== ""
+          ? setToast(formattedMessage, true, false)
+          : setToast(errorMessage, true, false);
+      } else {
+        // Handle the case where errorCode is undefined or doesn't contain a "/"
+        setToast(errorMessage, true, false);
+      }
+
+      setLoading(false);
+    }
   };
 
   return (
@@ -204,8 +224,12 @@ const Login: React.FC = () => {
                 </button>
               </div>
 
-              {/* <div className="divider">OR</div>
-              <button onClick={handleLogin} className="btn" disabled={loading}>
+              <div className="divider">OR</div>
+              <button
+                onClick={handleGoogleLogin}
+                className="btn"
+                disabled={loading}
+              >
                 {loading ? (
                   <Loader size="lg" />
                 ) : (
@@ -223,7 +247,7 @@ const Login: React.FC = () => {
                     Login with Google
                   </>
                 )}
-              </button> */}
+              </button>
             </form>
           </div>
         </>

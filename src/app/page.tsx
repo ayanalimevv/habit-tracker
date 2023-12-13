@@ -23,39 +23,11 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // const getHabitsData = async (uid: string) => {
-    //   try {
-    //     let res = await getDoc(doc(db, "users", `user_${uid}`));
-
-    //     const habitPromises = (res.data() as any).habitsId.map(
-    //       async (habitId: string) => {
-    //         const habitDocRef = doc(collection(db, "habits"), habitId);
-    //         const habitDoc = await getDoc(habitDocRef);
-
-    //         if (habitDoc.exists()) {
-    //           return { id: habitId, ...habitDoc.data() };
-    //         } else {
-    //           // Handle the case where the document doesn't exist
-    //           return { id: habitId, data: null };
-    //         }
-    //       }
-    //     );
-    //     const userDataArray = await Promise.all(habitPromises);
-    //     console.log(userDataArray);
-
-    //     setHabitDocs(userDataArray);
-    //   } catch (error: any) {
-    //     console.error("Error fetching user data:", error.message);
-    //     setToast(`${error.message}`, true, false);
-    //     setHabitDocs([]);
-    //   }
-    // };
     const auth = getAuth(app);
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;
         setUid(uid);
-        // getHabitsData(uid);
       } else {
         router.push("/auth/login");
         setTimeout(() => {
@@ -70,6 +42,7 @@ export default function Home() {
     setToastOpen: boolean,
     success: boolean
   ) => {
+    console.log(message);
     setIsToastOpen(setToastOpen);
     setToastMessage(message);
     setToastSucess(success);
@@ -103,7 +76,7 @@ export default function Home() {
           setHabitDocs(validDocs);
           setLoading(false);
         } catch (error: any) {
-          setToast(`${error.message}`, true, false);
+          setToast(`snap : ${error.message}`, true, false);
         }
       }
     );
