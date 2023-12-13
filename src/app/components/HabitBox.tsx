@@ -98,7 +98,7 @@ const HabitBox = ({
           {Array.from({ length: 2 }, (_, index) => {
             return (
               <MonthBox
-                month={new Date().getMonth() - index}
+                month={new Date().getMonth() - index - 1}
                 habitId={habit.id}
                 key={habit.id}
                 setToast={setToast}
