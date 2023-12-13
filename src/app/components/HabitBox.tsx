@@ -98,6 +98,7 @@ const HabitBox = ({
           {Array.from({ length: 2 }, (_, index) => {
             return (
               <MonthBox
+                //index start with 0 but we need from last month so -1
                 month={new Date().getMonth() - index - 1}
                 habitId={habit.id}
                 key={habit.id}
