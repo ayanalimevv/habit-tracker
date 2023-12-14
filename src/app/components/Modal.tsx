@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Modal = ({
   id,
@@ -8,7 +8,8 @@ const Modal = ({
   btnColor,
   btnText,
   isTextArea,
-  handleSetNote,
+  handleTextArea,
+  textAreaText = "",
 }: {
   id: string;
   topHeading: string;
@@ -17,28 +18,35 @@ const Modal = ({
   btnColor: "error" | "accent";
   btnText: string;
   isTextArea: boolean;
-  handleSetNote?: (text: string) => void;
+  handleTextArea?: (text: string) => void;
+  textAreaText?: string;
 }) => {
+  const [textAreaValue, setTextAreaValue] = useState(textAreaText);
+  const setTextArea = (e: any) => {
+    if (!handleTextArea) return;
+    setTextAreaValue(e.target.value);
+    handleTextArea(e.target.value);
+  };
   return (
     <dialog id={id} className="modal">
-      <div className="modal-box">
+      <div className="modal-box flex flex-col justify-center">
         <h3 className="font-bold text-lg">{topHeading}</h3>
         <p className="py-4">{paragraphText}</p>
-        {isTextArea && handleSetNote && (
+        {isTextArea && handleTextArea && (
           <textarea
             className="textarea textarea-bordered textarea-lg"
-            placeholder="Add a Note"
-            onChange={(e) => handleSetNote(e.target.value)}
+            placeholder={"Add a Note"}
+            onChange={setTextArea}
+            value={textAreaValue}
           ></textarea>
         )}
         <div className="modal-action">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
-            <button type="button" className="btn btn-outline mr-2">Close</button>
+            <button className="btn btn-outline mr-2">Close</button>
             <button
               onClick={handleOnConfirm}
               className={`btn btn-${btnColor} btn-outline`}
-              type="button"
             >
               {btnText}
             </button>

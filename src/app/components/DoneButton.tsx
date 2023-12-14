@@ -124,7 +124,7 @@ const DoneButton = ({
         paragraphText="Add a Note with Habit [Optional]"
         topHeading="Are you Sure?"
         handleOnConfirm={() => updateCompletion(habitId)}
-        handleSetNote={handleSetNote}
+        handleTextArea={handleSetNote}
       />
       <Modal
         id={`update_modal_${habitId}`}
@@ -134,7 +134,7 @@ const DoneButton = ({
         paragraphText="You can't revert action once undone."
         topHeading="Are you Sure?"
         handleOnConfirm={() => undoCompletion(habitId)}
-        handleSetNote={handleSetNote}
+        handleTextArea={handleSetNote}
       />
     </button>
   );
