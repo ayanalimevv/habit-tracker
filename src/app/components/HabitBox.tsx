@@ -55,8 +55,15 @@ const HabitBox = ({
   }, [day, habit.id, month, year, setToast]);
 
   return (
-    <div className="hover:cursor-pointer ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border">
-      <HabitHeading habitName={habit.habitName} streakLength={streak} />
+    <div
+      draggable={true}
+      className="hover:cursor-pointer ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border"
+    >
+      <HabitHeading
+        habitId={habit.id}
+        habitName={habit.habitName}
+        streakLength={streak}
+      />
       <MonthBox
         month={new Date().getMonth()}
         habitId={habit.id}
