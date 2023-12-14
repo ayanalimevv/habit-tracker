@@ -9,6 +9,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import DeleteButton from "./DeleteButton";
 import Modal from "./Modal";
+import Toggle from "./Toggle";
 
 const HabitBox = ({
   habit,

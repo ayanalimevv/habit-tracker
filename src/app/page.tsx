@@ -11,6 +11,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Footer from "./components/Footer";
 import { motion, useInView } from "framer-motion";
+import Toggle from "./components/Toggle";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -156,7 +157,7 @@ export default function Home() {
                 setToast={setToast}
                 uid={uid}
               />
-
+              <Toggle />
               {loading ? (
                 <Loader size="lg" />
               ) : habitDocs.length > 0 ? (
