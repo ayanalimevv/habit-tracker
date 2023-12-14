@@ -2,7 +2,7 @@
 import HabitInput from "./components/HabitInput";
 import { useEffect, useRef, useState } from "react";
 import HabitBox from "./components/HabitBox";
-import { onSnapshot, getDoc, doc } from "firebase/firestore";
+import { onSnapshot, getDoc, doc, collection } from "firebase/firestore";
 import { app, db } from "./utils/firebase";
 import Loader from "./components/Loader";
 import Toast from "./components/Toast";
@@ -55,36 +55,73 @@ export default function Home() {
       userDoc,
       async (querySnapshot: any): Promise<any> => {
         try {
-          const habitPromises = querySnapshot
-            .data()
-            ?.habitsId.map(async (habitRef: string) => {
+          setLoading(true);
+
+          const habitsIdArray = querySnapshot.data()?.habitsId || [];
+
+          const habitPromises = habitsIdArray.map(async (habitRef: string) => {
+            try {
               const habitDoc: any = await getDoc(doc(db, "habits", habitRef));
 
               if (habitDoc.exists()) {
                 return { ...habitDoc.data(), id: habitDoc.id } as Habit;
               } else {
-                setToast(`id : ${habitRef} Not Found.`, true, false);
+                setToast(`id: ${habitRef} Not Found.`, true, false);
                 return null;
               }
-            });
+            } catch (error: any) {
+              console.error(
+                `Error fetching habit with id ${habitRef}: ${error.message}`
+              );
+              return null;
+            }
+          });
 
-          const allDocs: Habit[] = await Promise.all(habitPromises);
+          const allDocs: Habit[] = (await Promise.all(habitPromises)).filter(
+            (doc) => doc !== null
+          );
 
-          // Filter out null values (docs where habit was not found)
-          const validDocs = allDocs.filter((doc) => doc !== null);
-
-          setHabitDocs(validDocs);
-          setLoading(false);
+          setHabitDocs(allDocs);
         } catch (error: any) {
-          console.log((error as Error).stack);
-
-          setToast(`snap : ${error.message}`, true, false);
+          console.error(`Error fetching habits: ${error.message}`);
+          setToast(`Error fetching habits: ${error.message}`, true, false);
+        } finally {
+          setLoading(false);
         }
       }
     );
 
     return () => unsubscribe();
-  }, [uid]);
+  }, []);
+  useEffect(() => {
+    const habitCollection = collection(db, "habits");
+
+    const unsubscribe = onSnapshot(
+      habitCollection,
+      async (querySnapshot: any): Promise<any> => {
+        try {
+          setLoading(true);
+
+          // Extract data from the query snapshot and update state
+          const habitsData = querySnapshot.docs.map((habitDoc: any) => ({
+            id: habitDoc.id,
+            ...habitDoc.data(),
+          }));
+
+          // Update your component state with the fetched data
+          setHabitDocs(habitsData);
+        } catch (error: any) {
+          console.error(`Error fetching habits: ${error.message}`);
+          setToast(`Error fetching habits: ${error.message}`, true, false);
+        } finally {
+          setLoading(false);
+        }
+      }
+    );
+
+    // Unsubscribe when the component is unmounted
+    return () => unsubscribe();
+  }, []);
 
   return (
     <>
