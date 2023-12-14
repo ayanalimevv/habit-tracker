@@ -34,10 +34,11 @@ const Modal = ({
         <div className="modal-action">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-outline mr-2">Close</button>
+            <button type="button" className="btn btn-outline mr-2">Close</button>
             <button
               onClick={handleOnConfirm}
               className={`btn btn-${btnColor} btn-outline`}
+              type="button"
             >
               {btnText}
             </button>

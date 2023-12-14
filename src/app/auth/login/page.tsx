@@ -98,27 +98,23 @@ const Login: React.FC = () => {
       const auth = getAuth(app);
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
+      GoogleAuthProvider.credentialFromResult(result);
 
       const user = result.user;
 
-      let userDoc = await getDoc(doc(db, "users", `user_${user.uid}`));
+      const options: Object = {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      };
+      const formattedDate = new Date().toLocaleDateString("en-US", options);
 
-      if (userDoc.exists() !== true) {
-        const options: any = {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        };
-        const formattedDate = new Date().toLocaleDateString("en-US", options);
-
-        await setDoc(doc(db, "users", `user_${user.uid}`), {
-          username: user.displayName,
-          email: user.email,
-          habitsId: [],
-          createdAt: formattedDate,
-        });
-      }
+      await setDoc(doc(db, "users", `user_${user.uid}`), {
+        username: user.displayName,
+        email: user.email,
+        habitsId: [],
+        createdAt: formattedDate,
+      });
 
       setLoading(false);
       router.push("/");

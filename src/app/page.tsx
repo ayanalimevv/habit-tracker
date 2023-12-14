@@ -76,6 +76,8 @@ export default function Home() {
           setHabitDocs(validDocs);
           setLoading(false);
         } catch (error: any) {
+          console.log((error as Error).stack);
+
           setToast(`snap : ${error.message}`, true, false);
         }
       }

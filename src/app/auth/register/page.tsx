@@ -51,8 +51,7 @@ const Register: React.FC = () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      // const token = credential?.accessToken;
+      GoogleAuthProvider.credentialFromResult(result);
 
       const user = result.user;
       const options: any = { day: "numeric", month: "short", year: "numeric" };

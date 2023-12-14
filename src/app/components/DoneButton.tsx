@@ -78,8 +78,6 @@ const DoneButton = ({
 
   const undoCompletion = async (habitId: string) => {
     try {
-      // console.log("undo");
-
       setStatus("loading");
       const habitDoc: any = doc(db, "habits", habitId);
 
