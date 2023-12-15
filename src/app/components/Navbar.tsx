@@ -5,16 +5,10 @@ import { useRouter } from "next/navigation";
 import { app, db } from "../utils/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
+import { useToast } from "./ToastContext";
 
-const Navbar = ({
-  navTitle,
-  setToast,
-  uid,
-}: {
-  navTitle: string;
-  setToast: (message: string, setToastOpen: boolean, success: boolean) => void;
-  uid: string;
-}) => {
+const Navbar = ({ navTitle, uid }: { navTitle: string; uid: string }) => {
+  const { setToast } = useToast();
   const [user, setUser] = useState<any>(null);
   const handleSignOut = () => {
     const auth = getAuth(app);

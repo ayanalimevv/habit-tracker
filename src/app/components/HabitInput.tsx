@@ -7,16 +7,10 @@ import {
   doc,
   arrayUnion,
 } from "firebase/firestore";
+import { useToast } from "./ToastContext";
 
-const HabitInput = ({
-  text,
-  setToast,
-  uid,
-}: {
-  text: string;
-  setToast: (message: string, value: boolean, success: boolean) => void;
-  uid: string;
-}) => {
+const HabitInput = ({ text, uid }: { text: string; uid: string }) => {
+  const { setToast } = useToast();
   const [habitInput, setHabitInput] = useState("");
 
   function getLastDateOfMonth(year: number, month: number) {
@@ -66,6 +60,8 @@ const HabitInput = ({
       let habitDoc = await addDoc(collection(db, "habits"), {
         habitName: habitInput,
         daysCompleted: createDaysCompletedObject(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
 
       await updateDoc(doc(db, "users", `user_${uid}`), {

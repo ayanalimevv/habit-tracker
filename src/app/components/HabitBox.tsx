@@ -9,20 +9,21 @@ import { db } from "../utils/firebase";
 import DeleteButton from "./DeleteButton";
 import { getStreak } from "../helpers/getStreak";
 import { updateStreak } from "../helpers/firebaseFunctions";
+import { useToast } from "./ToastContext";
 
 const HabitBox = ({
   habit,
-  setToast,
   uid,
   isHidden,
 }: {
   habit: Habit;
-  setToast: (message: string, value: boolean, success: boolean) => void;
   uid: string;
   isHidden: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [streak, setStreak] = useState(0);
+
+  const { setToast } = useToast();
 
   const year = new Date().getFullYear();
   const month = new Date().getMonth();
