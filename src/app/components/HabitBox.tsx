@@ -15,10 +15,12 @@ const HabitBox = ({
   habit,
   setToast,
   uid,
+  isHidden,
 }: {
   habit: Habit;
   setToast: (message: string, value: boolean, success: boolean) => void;
   uid: string;
+  isHidden: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [streak, setStreak] = useState(0);
@@ -58,7 +60,9 @@ const HabitBox = ({
   return (
     <div
       draggable={true}
-      className="hover:cursor-pointer ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border"
+      className={`hover:cursor-pointer ease-linear relative p-4 max-w-[400px] rounded-lg border-[#414141] border  ${
+        isHidden && "hidden"
+      }`}
     >
       <HabitHeading
         habitId={habit.id}

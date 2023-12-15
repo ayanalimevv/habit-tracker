@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 
-const Toggle = () => {
-  const [isChecked, setIsChecked] = useState(false);
+const Toggle = ({
+  isHideNotCompleted,
+  setIsHideNotCompleted,
+}: {
+  isHideNotCompleted: boolean;
+  setIsHideNotCompleted: any;
+}) => {
   return (
-    <div className="form-control w-full mb-4">
+    <div className="form-control mb-4 ml-auto">
       <label className="label cursor-pointer flex justify-end">
         <span className="label-text mr-2">
-          {isChecked ? "Hide" : "Show"} Completed
+          Show {!isHideNotCompleted ? "Completed" : "All"}
         </span>
         <input
           type="checkbox"
           className="toggle"
-          checked={isChecked}
-          onChange={() => setIsChecked(!isChecked)}
+          checked={isHideNotCompleted}
+          onChange={() => setIsHideNotCompleted(!isHideNotCompleted)}
         />
       </label>
     </div>

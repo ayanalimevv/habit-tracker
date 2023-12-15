@@ -1,15 +1,13 @@
 type Habit = {
   streak: number;
   habitName: string;
-  daysCompleted: { [date: string]: boolean };
+  daysCompleted: {
+    [date: string]: {
+      [isDone: string]: boolean;
+      [note: string]: string;
+    };
+  };
   id: string;
-};
-
-type HabitwId = {
-  streak: number;
-  habitName: string;
-  daysCompleted: { [date: string]: boolean };
-  id?: string;
 };
 
 type User = {

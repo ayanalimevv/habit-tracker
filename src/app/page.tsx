@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import Footer from "./components/Footer";
 import { motion, useInView } from "framer-motion";
 import Toggle from "./components/Toggle";
+import DropDown from "./components/DropDown";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -20,8 +21,15 @@ export default function Home() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastSucess, setToastSucess] = useState(false);
   const [uid, setUid] = useState("");
+  const [isHideNotCompleted, setIsHideNotCompleted] = useState(true);
+  const [fallBackArray, setFallBackArray] = useState<Habit[] | []>([]);
 
   const router = useRouter();
+
+  const dateObj = new Date();
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth();
+  const date = dateObj.getDate();
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -81,7 +89,7 @@ export default function Home() {
           const allDocs: Habit[] = (await Promise.all(habitPromises)).filter(
             (doc) => doc !== null
           );
-
+          setFallBackArray(allDocs);
           setHabitDocs(allDocs);
         } catch (error: any) {
           console.error(`Error fetching habits: ${error.message}`);
@@ -93,7 +101,10 @@ export default function Home() {
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [uid]);
+
+  console.log(habitDocs);
+
   useEffect(() => {
     const habitCollection = collection(db, "habits");
 
@@ -110,6 +121,7 @@ export default function Home() {
           }));
 
           // Update your component state with the fetched data
+          setFallBackArray(habitsData);
           setHabitDocs(habitsData);
         } catch (error: any) {
           console.error(`Error fetching habits: ${error.message}`);
@@ -123,6 +135,14 @@ export default function Home() {
     // Unsubscribe when the component is unmounted
     return () => unsubscribe();
   }, []);
+
+  const habitsSort = (filterBy: string) => {
+    let arr = [...habitDocs].sort((a: Habit, b: Habit) =>
+      b.habitName.localeCompare(a.habitName)
+    );
+
+    setHabitDocs(arr);
+  };
 
   return (
     <>
@@ -139,7 +159,7 @@ export default function Home() {
       ) : (
         <>
           <Navbar uid={uid} navTitle={`HabitGPT`} setToast={setToast} />
-          <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-24 px-3">
+          <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-24 px-3 overflow-hidden">
             <Toast
               success={toastSucess}
               isOpen={isToastOpen}
@@ -157,31 +177,43 @@ export default function Home() {
                 setToast={setToast}
                 uid={uid}
               />
-              <Toggle />
-              {loading ? (
-                <Loader size="lg" />
-              ) : habitDocs.length > 0 ? (
-                <div
-                  className={`grid ${
-                    habitDocs.length < 2 ? "md:grid-cols-1" : "md:grid-cols-2"
-                  } justify-center gap-8`}
-                >
-                  {habitDocs.map((habit: any, i: number) => {
-                    return (
-                      <motion.div
-                        key={habit.id}
-                        initial={{ opacity: 0, x: -10, y: -10 }}
-                        animate={{ opacity: 1, x: 0, y: 0 }}
-                        transition={{ duration: 0.5, delay: i * 0.2 }}
-                      >
-                        <HabitBox uid={uid} setToast={setToast} habit={habit} />
-                      </motion.div>
-                    );
-                  })}
+              <div>
+                <div className="flex items-center mb-4 lg:min-w-[400px]">
+                  <DropDown habitsSort={habitsSort} />
+                  <Toggle
+                    isHideNotCompleted={isHideNotCompleted}
+                    setIsHideNotCompleted={setIsHideNotCompleted}
+                  />
                 </div>
-              ) : (
-                "No Habit to Show!"
-              )}
+
+                {loading ? (
+                  <Loader size="lg" />
+                ) : habitDocs.length > 0 ? (
+                  <div
+                    className={`grid ${
+                      habitDocs.length < 2 ? "md:grid-cols-1" : "md:grid-cols-2"
+                    } justify-center gap-8`}
+                  >
+                    {habitDocs.map((habit: any, i: number) => {
+                      return (
+                        <HabitBox
+                          key={habit.id}
+                          isHidden={
+                            !habit.daysCompleted[`${year}`][`${month}`][
+                              `${date - 1}`
+                            ].isDone && isHideNotCompleted
+                          }
+                          uid={uid}
+                          setToast={setToast}
+                          habit={habit}
+                        />
+                      );
+                    })}
+                  </div>
+                ) : (
+                  "No Habit to Show!"
+                )}
+              </div>
             </div>
           </main>
           <Footer />
