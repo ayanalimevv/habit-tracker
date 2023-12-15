@@ -6,7 +6,8 @@ const DropDown = ({ habitsSort }: { habitsSort: any }) => {
   const handleSortChange = (e: any) => {
     let sortMethod = e.target.getAttribute("sort-var");
     setSortingHeading(e.target.innerText);
-    habitsSort();
+
+    habitsSort(sortMethod);
     setIsOpen(false);
   };
   return (
@@ -55,7 +56,7 @@ const DropDown = ({ habitsSort }: { habitsSort: any }) => {
             onClick={handleSortChange}
             sort-var="a-z"
           >
-            Alphabetical Order
+            Alphabetic
           </li>
           <li
             className="p-2 hover:cursor-pointer"

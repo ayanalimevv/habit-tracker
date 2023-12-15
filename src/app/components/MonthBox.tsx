@@ -5,6 +5,7 @@ import GreenMonthBox from "./GreenMonthBox";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import Loader from "./Loader";
+import { getMonthName } from "../helpers/formattedDate";
 
 const MonthBox = ({
   habitId,
@@ -21,31 +22,6 @@ const MonthBox = ({
   const [loading, setLoading] = useState(true);
   const [completedDays, setCompletedDays] = useState(0);
   const [totalDays, setTotalDays] = useState(0);
-
-  const getMonthName = (monthIndex: number): string => {
-    const months = [
-      "Jan",
-      "Feb",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "Aug",
-      "Sept",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-
-    if (monthIndex >= 0 && monthIndex <= 11) {
-      return months[monthIndex];
-    } else {
-      throw new Error(
-        "Invalid month index. Month index should be between 0 and 11."
-      );
-    }
-  };
 
   let year = new Date().getFullYear();
 

@@ -4,12 +4,11 @@ import { StreakBadge } from "./StreakBadge";
 import MonthBox from "./MonthBox";
 import DoneButton from "./DoneButton";
 import Divider from "./Divider";
-import Image from "next/image";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import DeleteButton from "./DeleteButton";
-import Modal from "./Modal";
-import Toggle from "./Toggle";
+import { getStreak } from "../helpers/getStreak";
+import { updateStreak } from "../helpers/firebaseFunctions";
 
 const HabitBox = ({
   habit,
@@ -39,16 +38,9 @@ const HabitBox = ({
         habitData.daysCompleted[year] &&
         habitData.daysCompleted[year][month]
       ) {
-        const currMonthObj = habitData.daysCompleted[year][month];
-        let streak = 0;
-
-        for (let i = day - 1; i >= 0; i--) {
-          if (currMonthObj[i] && !currMonthObj[i].isDone) break;
-          else streak++;
-        }
-
-        currMonthObj && currMonthObj[day].isDone ? streak++ : null;
+        const streak = getStreak(habitData);
         setStreak(streak);
+        updateStreak(streak, habit.id);
       } else {
         setToast("Unable Fetching Streak.", true, false);
       }
@@ -64,11 +56,7 @@ const HabitBox = ({
         isHidden && "hidden"
       }`}
     >
-      <HabitHeading
-        habitId={habit.id}
-        habitName={habit.habitName}
-        streakLength={streak}
-      />
+      <HabitHeading habitId={habit.id} habit={habit} streakLength={streak} />
       <MonthBox
         month={new Date().getMonth()}
         habitId={habit.id}

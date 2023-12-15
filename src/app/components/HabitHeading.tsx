@@ -3,16 +3,19 @@ import { StreakBadge } from "./StreakBadge";
 import Modal from "./Modal";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../utils/firebase";
+import { formattedDate } from "../helpers/formattedDate";
 
 export const HabitHeading = ({
-  habitName,
   streakLength,
   habitId,
+  habit,
 }: {
-  habitName: string;
   streakLength: number;
   habitId: string;
+  habit: Habit;
 }) => {
+  const { habitName, createdAt, updatedAt } = habit;
+
   const [showEdit, setShowEdit] = useState(false);
   const [updatedHabitName, setUpdatedHabitName] = useState(habitName);
 
@@ -47,6 +50,7 @@ export const HabitHeading = ({
           onMouseLeave={() => setShowEdit(false)}
         >
           {habitName}
+
           {showEdit && (
             <div
               onClick={() => {
@@ -69,6 +73,7 @@ export const HabitHeading = ({
             </div>
           )}
         </h1>
+        <p className="text-slate-500 mr-2">{formattedDate(createdAt)}</p>
         <StreakBadge streakLength={streakLength} />
       </div>
       <h1>[Streak : {streakLength} Day]</h1>

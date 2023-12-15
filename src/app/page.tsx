@@ -21,8 +21,7 @@ export default function Home() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastSucess, setToastSucess] = useState(false);
   const [uid, setUid] = useState("");
-  const [isHideNotCompleted, setIsHideNotCompleted] = useState(true);
-  const [fallBackArray, setFallBackArray] = useState<Habit[] | []>([]);
+  const [isHideNotCompleted, setIsHideNotCompleted] = useState(false);
 
   const router = useRouter();
 
@@ -51,7 +50,6 @@ export default function Home() {
     setToastOpen: boolean,
     success: boolean
   ) => {
-    console.log(message);
     setIsToastOpen(setToastOpen);
     setToastMessage(message);
     setToastSucess(success);
@@ -89,7 +87,6 @@ export default function Home() {
           const allDocs: Habit[] = (await Promise.all(habitPromises)).filter(
             (doc) => doc !== null
           );
-          setFallBackArray(allDocs);
           setHabitDocs(allDocs);
         } catch (error: any) {
           console.error(`Error fetching habits: ${error.message}`);
@@ -103,43 +100,78 @@ export default function Home() {
     return () => unsubscribe();
   }, [uid]);
 
-  console.log(habitDocs);
+  // useEffect(() => {
+  //   const habitCollection = collection(db, "habits");
 
-  useEffect(() => {
-    const habitCollection = collection(db, "habits");
+  //   const unsubscribe = onSnapshot(
+  //     habitCollection,
+  //     async (querySnapshot: any): Promise<any> => {
+  //       try {
+  //         setLoading(true);
 
-    const unsubscribe = onSnapshot(
-      habitCollection,
-      async (querySnapshot: any): Promise<any> => {
-        try {
-          setLoading(true);
+  //         // Extract data from the query snapshot and update state
+  //         const habitsData = querySnapshot.docs.map((habitDoc: any) => ({
+  //           id: habitDoc.id,
+  //           ...habitDoc.data(),
+  //         }));
 
-          // Extract data from the query snapshot and update state
-          const habitsData = querySnapshot.docs.map((habitDoc: any) => ({
-            id: habitDoc.id,
-            ...habitDoc.data(),
-          }));
+  //         // Update your component state with the fetched data
+  //         setHabitDocs(habitsData);
+  //       } catch (error: any) {
+  //         console.error(`Error fetching habits: ${error.message}`);
+  //         setToast(`Error fetching habits: ${error.message}`, true, false);
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     }
+  //   );
 
-          // Update your component state with the fetched data
-          setFallBackArray(habitsData);
-          setHabitDocs(habitsData);
-        } catch (error: any) {
-          console.error(`Error fetching habits: ${error.message}`);
-          setToast(`Error fetching habits: ${error.message}`, true, false);
-        } finally {
-          setLoading(false);
-        }
-      }
-    );
-
-    // Unsubscribe when the component is unmounted
-    return () => unsubscribe();
-  }, []);
+  //   // Unsubscribe when the component is unmounted
+  //   return () => unsubscribe();
+  // }, []);
 
   const habitsSort = (filterBy: string) => {
-    let arr = [...habitDocs].sort((a: Habit, b: Habit) =>
-      b.habitName.localeCompare(a.habitName)
-    );
+    let arr: Habit[] = [];
+
+    switch (filterBy) {
+      case "newest":
+        arr = [...habitDocs].sort(
+          (a: any, b: any) => b.createdAt - a.createdAt
+        );
+        break;
+
+      case "a-z":
+        // Sorting logic for alphabetical order
+        arr = [...habitDocs].sort((a: Habit, b: Habit) =>
+          a.habitName.localeCompare(b.habitName)
+        );
+        break;
+
+      case "streak":
+        // Sorting logic for streak
+        arr = [...habitDocs].sort(
+          (a: Habit, b: Habit) =>
+            // Add your sorting logic for streak here
+            b.streak - a.streak
+        );
+        break;
+
+      case "oldest":
+        // Sorting logic for oldest
+        arr = [...habitDocs].sort(
+          (a: any, b: any) =>
+            // Add your sorting logic for oldest here
+            a.createdAt - b.createdAt
+        );
+        break;
+
+      default:
+        // Default sorting logic (e.g., alphabetical order)
+        arr = [...habitDocs].sort((a: Habit, b: Habit) =>
+          a.habitName.localeCompare(b.habitName)
+        );
+        break;
+    }
 
     setHabitDocs(arr);
   };
