@@ -8,7 +8,7 @@ const Toggle = ({
   setIsHideNotCompleted: any;
 }) => {
   return (
-    <div className="form-control mb-4 ml-auto">
+    <div className="form-control">
       <label className="label cursor-pointer flex justify-end">
         <span className="label-text mr-2">
           Show {!isHideNotCompleted ? "Completed" : "All"}

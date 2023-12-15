@@ -11,7 +11,7 @@ const DropDown = ({ habitsSort }: { habitsSort: any }) => {
     setIsOpen(false);
   };
   return (
-    <div className="dropdown">
+    <div className="dropdown mr-auto">
       <div
         tabIndex={0}
         role="button"
