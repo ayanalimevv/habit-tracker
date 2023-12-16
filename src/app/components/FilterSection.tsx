@@ -12,7 +12,7 @@ const FilterSection = ({
   setIsHideNotCompleted: Dispatch<SetStateAction<boolean>>;
 }) => {
   return (
-    <div className="flex items-center mb-4 justify-start lg:min-w-[45rem] md:min-w-[25rem]">
+    <div className="flex items-center mb-4 justify-start w-full">
       <DropDown habitsSort={habitsSort} />
       <Toggle
         isHideNotCompleted={isHideNotCompleted}

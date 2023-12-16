@@ -73,12 +73,15 @@ const HabitInput = ({ text, uid }: { text: string; uid: string }) => {
     }
   };
   return (
-    <form className="flex my-6" onSubmit={handleFormSubmit}>
+    <form
+      className="flex my-6 transition-all ease-linear"
+      onSubmit={handleFormSubmit}
+    >
       <div>
         <input
           type="text"
           placeholder={text}
-          className="input input-bordered input-md w-full max-w-xs"
+          className="input input-bordered input-md  max-w-xs"
           value={habitInput}
           onChange={(e) => setHabitInput(e.target.value)}
         />
