@@ -23,7 +23,7 @@ const HabitSection = ({
         <div
           className={`grid ${
             habitDocs.length < 2 ? "md:grid-cols-1" : "md:grid-cols-2"
-          } justify-center gap-8`}
+          } justify-center gap-8 w-full`}
         >
           {habitDocs.map((habit: any, i: number) => {
             return (

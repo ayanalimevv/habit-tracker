@@ -6,6 +6,7 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import Loader from "./Loader";
 import { getMonthName } from "../helpers/formattedDate";
+import HabitModal from "./HabitModal";
 
 const MonthBox = ({
   habitId,
@@ -133,9 +134,19 @@ const MonthBox = ({
                   }
                 >
                   {habitsData[key as any].isDone ? (
-                    <GreenMonthBox />
+                    <GreenMonthBox
+                      habitId={habitId}
+                      year={year}
+                      month={month}
+                      date={Number(key)}
+                    />
                   ) : (
-                    <BrownMonthBox />
+                    <BrownMonthBox
+                      habitId={habitId}
+                      year={year}
+                      month={month}
+                      date={Number(key)}
+                    />
                   )}
                 </div>
               );

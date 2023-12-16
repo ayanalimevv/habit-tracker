@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FileInput from "./FileInput";
 
 const Modal = ({
   id,
@@ -10,6 +11,9 @@ const Modal = ({
   isTextArea,
   handleTextArea,
   textAreaText = "",
+  isFileInput = false,
+  onClickFirebaseFn,
+  argsArray,
 }: {
   id: string;
   topHeading: string;
@@ -20,6 +24,9 @@ const Modal = ({
   isTextArea: boolean;
   handleTextArea?: (text: string) => void;
   textAreaText?: string;
+  isFileInput?: boolean;
+  onClickFirebaseFn?: any;
+  argsArray?: any;
 }) => {
   const [textAreaValue, setTextAreaValue] = useState(textAreaText);
   const setTextArea = (e: any) => {
@@ -39,6 +46,12 @@ const Modal = ({
             onChange={setTextArea}
             value={textAreaValue}
           ></textarea>
+        )}
+        {isFileInput && onClickFirebaseFn && (
+          <FileInput
+            onClickFirebaseFn={onClickFirebaseFn}
+            argsArray={argsArray}
+          />
         )}
         <div className="modal-action">
           <form method="dialog">

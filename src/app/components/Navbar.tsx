@@ -6,10 +6,26 @@ import { app, db } from "../utils/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useToast } from "./ToastContext";
+import Button from "./Button";
+import {
+  removeProfilePic,
+  uploadProfilePic,
+} from "../helpers/firebaseFunctions";
+import FileInput from "./FileInput";
 
-const Navbar = ({ navTitle, uid }: { navTitle: string; uid: string }) => {
+const Navbar = ({
+  navTitle,
+  uid,
+  profileUrl,
+}: {
+  navTitle: string;
+  uid: string;
+  profileUrl: string | null;
+}) => {
   const { setToast } = useToast();
   const [user, setUser] = useState<any>(null);
+  const [value, setValue] = useState(0);
+
   const handleSignOut = () => {
     const auth = getAuth(app);
     signOut(auth)
@@ -44,26 +60,26 @@ const Navbar = ({ navTitle, uid }: { navTitle: string; uid: string }) => {
             role="button"
             className="btn btn-ghost btn-circle avatar bg-[#1d1d1d] rounded-lg flex flex-row"
           >
-            {/* <Image
-              alt="Tailwind CSS Navbar component"
-              src={
-                "https://firebasestorage.googleapis.com/v0/b/habit-tracker-12666.appspot.com/o/Android%20Small%20-%208.png?alt=media&token=a73802f5-315f-46eb-8f1e-8994dd6c6d3d"
-              }
-              width={40}
-              height={40}
-              className="rounded-lg"
-            /> */}
-
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="30"
-              height="30"
-              fill="currentColor"
-              className="bi bi-person"
-              viewBox="0 0 16 16"
-            >
-              <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z" />
-            </svg>
+            {profileUrl ? (
+              <Image
+                src={profileUrl}
+                alt={"Profile-Pic"}
+                width={30}
+                height={30}
+                className="rounded-lg"
+              />
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                fill="currentColor"
+                className="bi bi-person"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z" />
+              </svg>
+            )}
           </div>
           <ul
             tabIndex={0}
@@ -71,6 +87,15 @@ const Navbar = ({ navTitle, uid }: { navTitle: string; uid: string }) => {
           >
             <h1 className="p-2">{`Hi, ${user?.username}`}</h1>
             <p className="p-2">{`Member Since ${user?.createdAt}`} </p>
+            <li
+              onClick={() =>
+                (
+                  document.getElementById("profile_modal") as HTMLDialogElement
+                )?.showModal()
+              }
+            >
+              <span className="p-2">Update Profile Pic</span>
+            </li>
             <li>
               <span onClick={handleSignOut} className="p-2">
                 Logout
@@ -96,6 +121,65 @@ const Navbar = ({ navTitle, uid }: { navTitle: string; uid: string }) => {
           </ul>
         </div>
       </div>
+
+      <dialog id="profile_modal" className="modal">
+        <div className="modal-box relative flex justify-center flex-col items-center bg-black border border-white border-opacity-20">
+          {value > 0 && (
+            <progress
+              className="progress w-full absolute top-0 left-0 transition-all ease-linear"
+              value={value}
+              max="100"
+            ></progress>
+          )}
+          <div
+            className={`avatar flex rounded-lg justify-center items-center ${
+              !profileUrl &&
+              " btn hover:scale-[.98] bg-opacity-50 min-h-[133px] w-[50%]"
+            }`}
+          >
+            {!profileUrl ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="150"
+                height="100"
+                fill="currentColor"
+                className="bi bi-person"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z" />
+              </svg>
+            ) : (
+              <Image
+                src={profileUrl}
+                alt={"Profile-Pic"}
+                width={1200}
+                height={800}
+                layout="responsive"
+                objectFit="cover" // or "contain", "fill", etc.
+                objectPosition="center"
+              />
+            )}
+          </div>
+          <div className="flex items-center mt-6 w-full">
+            {!profileUrl ? (
+              <FileInput
+                onClickFirebaseFn={uploadProfilePic}
+                argsArray={[uid, setValue]}
+              />
+            ) : (
+              <Button
+                extraClass="w-full"
+                onClickFn={() => removeProfilePic(uid)}
+              >
+                Remove Profile Pic
+              </Button>
+            )}
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 };

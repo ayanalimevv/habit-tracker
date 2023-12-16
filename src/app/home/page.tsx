@@ -26,6 +26,8 @@ import { ToastProvider, useToast } from "../components/ToastContext";
 import LoadingScreen from "../components/LoadingScreen";
 import FilterSection from "../components/FilterSection";
 import HabitSection from "../components/HabitSection";
+import HabitModal from "../components/HabitModal";
+import { HabitModalProvider } from "../components/HabitModalContext";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -33,6 +35,7 @@ export default function Home() {
   const [habitDocs, setHabitDocs] = useState<Habit[] | []>([]);
   const [uid, setUid] = useState("");
   const [isHideNotCompleted, setIsHideNotCompleted] = useState(false);
+  const [profileUrl, setProfileUrl] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -62,7 +65,8 @@ export default function Home() {
       async (querySnapshot: any): Promise<any> => {
         try {
           setLoading(true);
-
+          const profileUrl = querySnapshot.data()?.profileUrl || null;
+          setProfileUrl(profileUrl);
           const habitsIdArray = querySnapshot.data()?.habitsId || [];
 
           const habitPromises = habitsIdArray.map(async (habitRef: string) => {
@@ -161,35 +165,40 @@ export default function Home() {
 
   return (
     <ToastProvider>
-      {pageLoading ? (
-        <LoadingScreen />
-      ) : (
-        <>
-          <Navbar uid={uid} navTitle={`HabitGPT`} />
-          <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-24 px-3 overflow-hidden">
-            <Toast />
-            <div className="flex flex-col z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-              <h1 className="text-4xl uppercase text-center font-semibold">
-                Habit Tracker
-              </h1>
-              <HabitInput text={`Type New Habit`} uid={uid} />
-              <Divider />
-              <FilterSection
-                habitsSort={habitsSort}
-                isHideNotCompleted={isHideNotCompleted}
-                setIsHideNotCompleted={setIsHideNotCompleted}
-              />
-              <HabitSection
-                habitDocs={habitDocs}
-                uid={uid}
-                isHideNotCompleted={isHideNotCompleted}
-                loading={loading}
-              />
-            </div>
-          </main>
-          <Footer />
-        </>
-      )}
+      <HabitModalProvider>
+        {pageLoading ? (
+          <LoadingScreen />
+        ) : (
+          <>
+            <HabitModal id="show_habit" />
+            <Navbar uid={uid} navTitle={`HabitGPT`} profileUrl={profileUrl} />
+            <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-24 px-3 overflow-hidden">
+              <Toast />
+              <div className="flex flex-col z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
+                <h1 className="text-4xl uppercase text-center font-semibold">
+                  Habit Tracker
+                </h1>
+                <HabitInput text={`Type New Habit`} uid={uid} />
+                <div className="lg:min-w-[832px] min-w-[290px]">
+                  <Divider />
+                  <FilterSection
+                    habitsSort={habitsSort}
+                    isHideNotCompleted={isHideNotCompleted}
+                    setIsHideNotCompleted={setIsHideNotCompleted}
+                  />
+                  <HabitSection
+                    habitDocs={habitDocs}
+                    uid={uid}
+                    isHideNotCompleted={isHideNotCompleted}
+                    loading={loading}
+                  />
+                </div>
+              </div>
+            </main>
+            <Footer />
+          </>
+        )}
+      </HabitModalProvider>
     </ToastProvider>
   );
 }
