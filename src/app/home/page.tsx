@@ -155,6 +155,7 @@ export default function Home() {
     setHabitDocs(arr);
     setLoading(false);
   };
+
   return (
     <ToastProvider>
       {pageLoading ? (
@@ -167,7 +168,6 @@ export default function Home() {
           <Navbar uid={uid} navTitle={`HabitGPT`} />
           <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 py-24 px-3 overflow-hidden">
             <Toast />
-
             <div className="flex flex-col z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
               <h1 className="text-4xl uppercase text-center font-semibold">
                 Habit Tracker
