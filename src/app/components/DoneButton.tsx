@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { db } from "../utils/firebase";
 import { update } from "firebase/database";
 import Modal from "./Modal";
+import { uploadHabitPic } from "../helpers/firebaseFunctions";
+import { getYearMonthDate } from "../helpers/formattedDate";
 
 const DoneButton = ({
   defaultText,
@@ -19,6 +21,9 @@ const DoneButton = ({
   const [text, setText] = useState(defaultText);
   const [note, setNote] = useState("");
 
+  let { year, month, date } = getYearMonthDate(new Date());
+  let day = date - 1;
+
   const handleSetNote = (text: string) => {
     setNote(text);
   };
@@ -31,10 +36,6 @@ const DoneButton = ({
 
   useEffect(() => {
     const getHabitStatus = async (habitId: string) => {
-      let year = new Date().getFullYear();
-      let month = new Date().getMonth();
-      let day = new Date().getDate() - 1;
-
       const habit: any = (await getDoc(doc(db, "habits", habitId))).data();
       if (
         habit &&
@@ -59,10 +60,6 @@ const DoneButton = ({
       setStatus("loading");
       const habitDoc: any = doc(db, "habits", habitId);
 
-      let year = new Date().getFullYear();
-      let month = new Date().getMonth();
-      let day = new Date().getDate() - 1;
-
       await updateDoc(habitDoc, {
         [`daysCompleted.${year}.${month}.${day}.isDone`]: true,
         [`daysCompleted.${year}.${month}.${day}.note`]: note,
@@ -80,10 +77,6 @@ const DoneButton = ({
     try {
       setStatus("loading");
       const habitDoc: any = doc(db, "habits", habitId);
-
-      let year = new Date().getFullYear();
-      let month = new Date().getMonth();
-      let day = new Date().getDate() - 1;
 
       await updateDoc(habitDoc, {
         [`daysCompleted.${year}.${month}.${day}.isDone`]: false,
@@ -125,6 +118,9 @@ const DoneButton = ({
         topHeading="Are you Sure?"
         handleOnConfirm={() => updateCompletion(habitId)}
         handleTextArea={handleSetNote}
+        isFileInput={true}
+        onClickFirebaseFn={uploadHabitPic}
+        argsArray={[habitId]}
       />
       <Modal
         id={`update_modal_${habitId}`}
