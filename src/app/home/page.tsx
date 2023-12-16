@@ -23,6 +23,9 @@ import { Unsubscribe } from "firebase/database";
 import Divider from "../components/Divider";
 import { handleHabitSort } from "../helpers/habitsSort";
 import { ToastProvider, useToast } from "../components/ToastContext";
+import LoadingScreen from "../components/LoadingScreen";
+import FilterSection from "../components/FilterSection";
+import HabitSection from "../components/HabitSection";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -159,10 +162,7 @@ export default function Home() {
   return (
     <ToastProvider>
       {pageLoading ? (
-        <div className="h-screen w-screen flex justify-center items-center">
-          <Toast />
-          <Loader size="lg" />
-        </div>
+        <LoadingScreen />
       ) : (
         <>
           <Navbar uid={uid} navTitle={`HabitGPT`} />
@@ -172,45 +172,19 @@ export default function Home() {
               <h1 className="text-4xl uppercase text-center font-semibold">
                 Habit Tracker
               </h1>
-
               <HabitInput text={`Type New Habit`} uid={uid} />
-
-              <div>
-                <div className="flex items-center mb-4 justify-start lg:min-w-[45rem] md:min-w-[25rem]">
-                  <DropDown habitsSort={habitsSort} />
-                  <Toggle
-                    isHideNotCompleted={isHideNotCompleted}
-                    setIsHideNotCompleted={setIsHideNotCompleted}
-                  />
-                </div>
-                <Divider />
-                {loading ? (
-                  <Loader size="lg" />
-                ) : habitDocs.length > 0 ? (
-                  <div
-                    className={`grid ${
-                      habitDocs.length < 2 ? "md:grid-cols-1" : "md:grid-cols-2"
-                    } justify-center gap-8`}
-                  >
-                    {habitDocs.map((habit: any, i: number) => {
-                      return (
-                        <HabitBox
-                          key={habit.id}
-                          isHidden={
-                            !habit.daysCompleted[`${year}`][`${month}`][
-                              `${date - 1}`
-                            ].isDone && isHideNotCompleted
-                          }
-                          uid={uid}
-                          habit={habit}
-                        />
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-center"> No Habit to Show!</p>
-                )}
-              </div>
+              <Divider />
+              <FilterSection
+                habitsSort={habitsSort}
+                isHideNotCompleted={isHideNotCompleted}
+                setIsHideNotCompleted={setIsHideNotCompleted}
+              />
+              <HabitSection
+                habitDocs={habitDocs}
+                uid={uid}
+                isHideNotCompleted={isHideNotCompleted}
+                loading={loading}
+              />
             </div>
           </main>
           <Footer />

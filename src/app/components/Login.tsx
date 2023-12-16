@@ -171,7 +171,7 @@ const Login = ({
               disabled={loading}
             >
               {loading ? (
-                <Loader size="lg" />
+                <Loader />
               ) : (
                 <>
                   <svg
@@ -198,7 +198,7 @@ const Login = ({
             disabled={loading}
           >
             {loading ? (
-              <Loader size="lg" />
+              <Loader />
             ) : (
               <>
                 <svg

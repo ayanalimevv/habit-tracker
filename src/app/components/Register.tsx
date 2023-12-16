@@ -242,7 +242,7 @@ const Register = ({
               disabled={loading}
             >
               {loading ? (
-                <Loader size="lg" />
+                <Loader />
               ) : (
                 <>
                   <svg
@@ -269,7 +269,7 @@ const Register = ({
             disabled={loading}
           >
             {loading ? (
-              <Loader size="lg" />
+              <Loader />
             ) : (
               <>
                 <svg

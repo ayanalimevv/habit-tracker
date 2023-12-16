@@ -1,7 +1,7 @@
 import React from "react";
 
-const Loader = ({ size }: { size: string }) => {
-  return <span className={`loading loading-infinity loading-${size}`}></span>;
+const Loader = () => {
+  return <span className={`loading loading-infinity loading-md`}></span>;
 };
 
 export default Loader;

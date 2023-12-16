@@ -115,7 +115,7 @@ const MonthBox = ({
       />
 
       {loading ? (
-        <Loader size="lg" />
+        <Loader />
       ) : (
         <div className="flex flex-wrap gap-2">
           {!(Object.keys(habitsData).length === 0) &&
