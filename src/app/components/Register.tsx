@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 import React, { useState } from "react";
 import {
@@ -7,40 +6,31 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { app, db } from "../../utils/firebase";
+import { app, db } from "../utils/firebase";
 import { useRouter } from "next/navigation";
 import Toast from "@/app/components/Toast";
 import Loader from "@/app/components/Loader";
 import { doc, setDoc } from "firebase/firestore";
+import { useToast } from "./ToastContext";
 
-const Register: React.FC = () => {
+const Register = ({
+  setLoggedIn,
+}: {
+  setLoggedIn: (loginValue: boolean) => void;
+}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
-
+  const { setToast } = useToast();
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-
-  const [isToastOpen, setIsToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastSucess, setToastSucess] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     password !== "" && setShowPassword(!showPassword);
-  };
-
-  const setToast = (
-    message: string,
-    setToastOpen: boolean,
-    success: boolean
-  ) => {
-    setIsToastOpen(setToastOpen);
-    setToastMessage(message);
-    setToastSucess(success);
   };
 
   const handleGoogleRegister = async (e: any) => {
@@ -143,12 +133,6 @@ const Register: React.FC = () => {
 
   return (
     <>
-      <Toast
-        message={toastMessage}
-        isOpen={isToastOpen}
-        success={toastSucess}
-        setToast={setToast}
-      />
       <div className="text-center lg:text-left">
         <h1 className="text-5xl font-bold">Register now!</h1>
         <p className="py-6">
@@ -243,7 +227,8 @@ const Register: React.FC = () => {
             />
             <label className="label">
               <Link
-                href="/auth/login"
+                href="/auth"
+                onClick={() => setLoggedIn(true)}
                 className="label-text-alt link link-hover"
               >
                 {`Already have a account?`}

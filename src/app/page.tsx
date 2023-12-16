@@ -4,7 +4,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { app } from "./utils/firebase";
-import Login from "./auth/login/page";
+import Auth from "./auth/page";
 import Home from "./home/page";
 
 const App = () => {
@@ -20,14 +20,14 @@ const App = () => {
         setLoading(false);
         router.push("/home");
       } else {
-        router.push("/auth/login");
+        router.push("/auth/");
         setTimeout(() => {
           setLoading(false);
         }, 3000);
       }
     });
   }, [router]);
-  return <>{uid ? <Home /> : <Login />}</>;
+  return <>{uid ? <Home /> : <Auth />}</>;
 };
 
 export default App;
