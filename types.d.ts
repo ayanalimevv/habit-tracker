@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 type Habit = {
   streak: number;
   habitName: string;
@@ -16,4 +18,11 @@ type Habit = {
 type User = {
   name: string;
   habitsId: [string];
+};
+
+type DayDetails = {
+  [isDone: string]: boolean;
+  [note: string]: string;
+  [habitImage?: string]: string;
+  [createdAt?: string]: Timestamp;
 };
