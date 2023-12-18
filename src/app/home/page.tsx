@@ -132,7 +132,7 @@ export default function Home() {
         const userSnapshot: DocumentSnapshot<any> = await getDoc(userDocRef);
         const habitsIdArray: string[] = userSnapshot.data()?.habitsId || [];
 
-        habitsIdArray.forEach(fetchDataForHabit);
+        await Promise.all(habitsIdArray.map(fetchDataForHabit));
       } catch (error: any) {
         console.error(`Error fetching user data: ${error.message}`);
         // setToast(`Error fetching user data: ${error.message}`, true, false);
