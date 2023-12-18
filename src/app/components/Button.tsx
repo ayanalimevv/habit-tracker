@@ -4,15 +4,18 @@ const Button = ({
   children,
   extraClass = "",
   onClickFn,
+  disabled = false,
 }: {
   children?: any;
   extraClass?: string;
   onClickFn?: any;
+  disabled?: boolean;
 }) => {
   return (
     <button
-      className={`btn hover:scale-[.98] bg-opacity-50 hover:bg-opacity-70 ${extraClass}`}
+      className={`btn hover:scale-[.98] ${extraClass}`}
       onClick={onClickFn}
+      disabled={disabled}
     >
       {children}
     </button>

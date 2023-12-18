@@ -63,6 +63,7 @@ const DoneButton = ({
       await updateDoc(habitDoc, {
         [`daysCompleted.${year}.${month}.${day}.isDone`]: true,
         [`daysCompleted.${year}.${month}.${day}.note`]: note,
+        [`daysCompleted.${year}.${month}.${day}.doneAt`]: new Date(),
       });
 
       setStatus("completed");
