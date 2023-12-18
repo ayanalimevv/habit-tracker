@@ -50,7 +50,7 @@ const Modal = ({
         {isFileInput && onClickFirebaseFn && (
           <FileInput
             onClickFirebaseFn={onClickFirebaseFn}
-            argsArray={argsArray}
+            argsArray={[...argsArray]}
           />
         )}
         <div className="modal-action flex justify-end">

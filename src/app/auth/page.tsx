@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ToastProvider } from "../components/ToastContext";
-import { useRouter } from "next/navigation";
 import Register from "../components/Register";
 import Login from "../components/Login";
 

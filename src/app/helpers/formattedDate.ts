@@ -17,6 +17,16 @@ export const formattedDate = (timestamp: any): string => {
   });
 };
 
+export const formattedDateWithTime = (timestamp: any): string => {
+  const timestampCombined: number =
+    timestamp.seconds + timestamp.nanoseconds / 1e9;
+
+  // Convert to date
+  const date: Date = new Date(timestampCombined * 1000); // Convert to milliseconds
+
+  return date.toLocaleString();
+};
+
 export const getMonthName = (monthIndex: number): string => {
   const months = [
     "Jan",

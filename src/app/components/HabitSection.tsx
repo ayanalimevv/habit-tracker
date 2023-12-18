@@ -2,6 +2,7 @@ import React from "react";
 import HabitBox from "./HabitBox";
 import { getYearMonthDate } from "../helpers/formattedDate";
 import Loader from "./Loader";
+import { Habit } from "../../../types";
 
 const HabitSection = ({
   habitDocs,
@@ -15,6 +16,7 @@ const HabitSection = ({
   loading: boolean;
 }) => {
   const { year, month, date } = getYearMonthDate(new Date());
+
   return (
     <>
       {loading ? (

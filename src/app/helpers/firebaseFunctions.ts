@@ -1,12 +1,9 @@
 import { doc, updateDoc } from "firebase/firestore";
 import { app, db } from "../utils/firebase";
-import firebase from "firebase/compat/app";
-import { getAuth } from "firebase/auth";
 import {
   getDownloadURL,
   getStorage,
   ref,
-  uploadBytes,
   uploadBytesResumable,
 } from "firebase/storage";
 
@@ -75,14 +72,18 @@ export const uploadHabitPic = async (
   habitId: string,
   year: number,
   month: number,
-  day: number
+  day: number,
+  setValue: any
 ) => {
   if (selectedFile && habitId) {
     // Get the reference to the storage
     const storage = getStorage(app);
 
     // Create a reference to the file in Firebase Storage
-    const storageRef = ref(storage, `images/habit/${habitId}`);
+    const storageRef = ref(
+      storage,
+      `images/habit/${habitId}_${day}_${month}_${year}`
+    );
 
     // Upload the file
     try {
@@ -90,18 +91,11 @@ export const uploadHabitPic = async (
       uploadTask.on(
         "state_changed",
         (snapshot) => {
+          setValue(10);
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log("Upload is " + progress + "% done");
-          // setValue(progress);
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-          }
+          setValue(progress);
         },
         (error) => {
           console.error(`Upload Failed`);
@@ -110,7 +104,7 @@ export const uploadHabitPic = async (
           getDownloadURL(uploadTask.snapshot.ref).then(
             (downloadURL: string) => {
               updateHabitPicInDb(downloadURL, habitId, year, month, day);
-              // setValue(0);
+              setValue(100);
             }
           );
         }

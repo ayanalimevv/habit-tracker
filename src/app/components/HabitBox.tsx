@@ -10,6 +10,7 @@ import DeleteButton from "./DeleteButton";
 import { getStreak } from "../helpers/getStreak";
 import { updateStreak } from "../helpers/firebaseFunctions";
 import { useToast } from "./ToastContext";
+import { Habit } from "../../../types";
 
 const HabitBox = ({
   habit,

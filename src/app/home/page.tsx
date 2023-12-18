@@ -28,6 +28,7 @@ import FilterSection from "../components/FilterSection";
 import HabitSection from "../components/HabitSection";
 import HabitModal from "../components/HabitModal";
 import { HabitModalProvider } from "../components/HabitModalContext";
+import { Habit } from "../../../types";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -90,6 +91,8 @@ export default function Home() {
           const allDocs: Habit[] = (await Promise.all(habitPromises)).filter(
             (doc) => doc !== null
           );
+          console.log(allDocs);
+
           setHabitDocs(allDocs);
         } catch (error: any) {
           console.error(`Error fetching habits: ${error.message}`);
@@ -140,7 +143,6 @@ export default function Home() {
         setLoading(false);
       }
     };
-
     unsubscribeUser = onSnapshot(userDocRef, fetchDataForUser);
 
     return () => {
@@ -154,11 +156,12 @@ export default function Home() {
         }
       });
     };
-  }, [uid]);
+  }, [uid, habitDocs]);
 
   const habitsSort = (filterBy: string) => {
     setLoading(true);
-    let arr = handleHabitSort(habitDocs, filterBy);
+
+    let arr = handleHabitSort([...habitDocs], filterBy);
     setHabitDocs(arr);
     setLoading(false);
   };

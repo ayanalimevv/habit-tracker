@@ -1,3 +1,5 @@
+import { Habit } from "../../../types";
+
 export const handleHabitSort = (
   habitDocs: Habit[] | [],
   filterBy: string
