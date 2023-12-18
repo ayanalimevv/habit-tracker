@@ -72,7 +72,10 @@ export const uploadProfilePic = async (
 
 export const uploadHabitPic = async (
   selectedFile: File | null,
-  habitId: string
+  habitId: string,
+  year: number,
+  month: number,
+  day: number
 ) => {
   if (selectedFile && habitId) {
     // Get the reference to the storage
@@ -106,7 +109,7 @@ export const uploadHabitPic = async (
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(
             (downloadURL: string) => {
-              updateHabitPicInDb(downloadURL, habitId);
+              updateHabitPicInDb(downloadURL, habitId, year, month, day);
               // setValue(0);
             }
           );
@@ -124,9 +127,15 @@ const updateProfilePicInDb = async (downloadURL: string, uid: string) => {
   });
 };
 
-const updateHabitPicInDb = async (downloadURL: string, habitId: string) => {
+const updateHabitPicInDb = async (
+  downloadURL: string,
+  habitId: string,
+  year: number,
+  month: number,
+  day: number
+) => {
   await updateDoc(doc(db, "habits", `${habitId}`), {
-    habitImageUrl: downloadURL,
+    [`daysCompleted.${year}.${month}.${day}.habitImage`]: downloadURL,
   });
 };
 

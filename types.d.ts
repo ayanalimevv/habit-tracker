@@ -5,6 +5,7 @@ type Habit = {
     [date: string]: {
       [isDone: string]: boolean;
       [note: string]: string;
+      [habitImage?: string]: string;
     };
   };
   id: string;

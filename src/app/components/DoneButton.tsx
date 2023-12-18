@@ -120,7 +120,7 @@ const DoneButton = ({
         handleTextArea={handleSetNote}
         isFileInput={true}
         onClickFirebaseFn={uploadHabitPic}
-        argsArray={[habitId]}
+        argsArray={[habitId, year, month, day]}
       />
       <Modal
         id={`update_modal_${habitId}`}

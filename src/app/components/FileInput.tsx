@@ -17,9 +17,12 @@ const FileInput = ({
     }
   };
   return (
-    <>
-      {" "}
+    <div className="my-4">
+      <div className="label">
+        <span className="label-text">Add a Image (Optional)</span>
+      </div>
       <input
+        alt="Upload Image"
         type="file"
         placeholder="Input Image!"
         className="file-input file-input-bordered w-full max-w-xs mr-2 hover:scale-[.99] bg-opacity-50"
@@ -33,7 +36,7 @@ const FileInput = ({
       >
         Upload File
       </Button>
-    </>
+    </div>
   );
 };
 

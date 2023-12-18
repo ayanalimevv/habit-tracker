@@ -1,5 +1,4 @@
 import React from "react";
-import { openModalById } from "../helpers/openModalById";
 import { useHabitModal } from "./HabitModalContext";
 
 const GreenMonthBox = ({
