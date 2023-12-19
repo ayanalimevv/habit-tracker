@@ -1,3 +1,4 @@
+import { Habit } from "../../../types";
 import { getYearMonthDate } from "./formattedDate";
 
 export const getStreak = (habit: Habit): number => {
