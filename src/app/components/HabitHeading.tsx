@@ -4,6 +4,7 @@ import Modal from "./Modal";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import { formattedDate } from "../helpers/formattedDate";
+import { Habit } from "../../../types";
 
 export const HabitHeading = ({
   streakLength,

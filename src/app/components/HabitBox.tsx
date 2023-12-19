@@ -30,26 +30,26 @@ const HabitBox = ({
   const month = new Date().getMonth();
   const day = new Date().getDate() - 1;
 
-  useEffect(() => {
-    const unsub = onSnapshot(doc(db, "habits", habit.id), (doc: any): any => {
-      const habitData = doc.data();
+  // useEffect(() => {
+  //   const unsub = onSnapshot(doc(db, "habits", habit.id), (doc: any): any => {
+  //     const habitData = doc.data();
 
-      if (
-        habitData &&
-        habitData.daysCompleted &&
-        habitData.daysCompleted[year] &&
-        habitData.daysCompleted[year][month]
-      ) {
-        const streak = getStreak(habitData);
-        setStreak(streak);
-        updateStreak(streak, habit.id);
-      } else {
-        setToast("Unable Fetching Streak.", true, false);
-      }
-    });
+  //     if (
+  //       habitData &&
+  //       habitData.daysCompleted &&
+  //       habitData.daysCompleted[year] &&
+  //       habitData.daysCompleted[year][month]
+  //     ) {
+  //       const streak = getStreak(habitData);
+  //       setStreak(streak);
+  //       updateStreak(streak, habit.id);
+  //     } else {
+  //       setToast("Unable Fetching Streak.", true, false);
+  //     }
+  //   });
 
-    return () => unsub();
-  }, [day, habit.id, month, year, setToast]);
+  //   return () => unsub();
+  // }, [day, habit.id, month, year, setToast]);
 
   return (
     <div

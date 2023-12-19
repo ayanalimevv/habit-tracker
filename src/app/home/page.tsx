@@ -16,8 +16,6 @@ import Navbar from "../components/Navbar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Footer from "../components/Footer";
-import Toggle from "../components/Toggle";
-import DropDown from "../components/DropDown";
 import { getYearMonthDate } from "../helpers/formattedDate";
 import { Unsubscribe } from "firebase/database";
 import Divider from "../components/Divider";
@@ -39,8 +37,7 @@ export default function Home() {
   const [profileUrl, setProfileUrl] = useState<string | null>(null);
 
   const router = useRouter();
-
-  const { year, month, date } = getYearMonthDate(new Date());
+  console.log(habitDocs);
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -91,9 +88,10 @@ export default function Home() {
           const allDocs: Habit[] = (await Promise.all(habitPromises)).filter(
             (doc) => doc !== null
           );
-          console.log(allDocs);
 
-          setHabitDocs(allDocs);
+          setTimeout(() => {
+            setHabitDocs(allDocs);
+          }, 100);
         } catch (error: any) {
           console.error(`Error fetching habits: ${error.message}`);
           // setToast(`Error fetching habits`, true, false);
@@ -107,16 +105,35 @@ export default function Home() {
   }, [uid]);
 
   useEffect(() => {
+    if (!uid) {
+      return; // Skip if uid is not available yet
+    }
+
     const userDocRef = doc(db, "users", `user_${uid}`);
     let unsubscribeUser: Unsubscribe | undefined;
     const unsubscribeHabits: { [habitId: string]: Unsubscribe } = {};
-
+    let habitArray: any = [];
     const fetchDataForHabit = async (habitId: string) => {
       const habitDocRef = doc(db, "habits", habitId);
       unsubscribeHabits[habitId] = onSnapshot(habitDocRef, (snapshot) => {
         try {
           if (snapshot.exists()) {
             const habitData = { id: snapshot.id, ...snapshot.data() } as Habit;
+
+            const existingIndex = habitArray.findIndex(
+              (obj: any) => obj.id === habitData.id
+            );
+
+            if (existingIndex !== -1) {
+              habitArray[existingIndex] = {
+                ...habitArray[existingIndex],
+                ...habitData,
+              };
+            } else {
+              habitArray.push(habitData);
+            }
+
+            setHabitDocs(habitArray);
           } else {
             // setToast(`Habit no longer exists:`, true, true);
             console.error(`Habit ${habitId} no longer exists.`);
@@ -126,6 +143,7 @@ export default function Home() {
           // setToast(`Error fetching habit: ${error.message}`, true, false);
         }
       });
+      // setHabitDocs(habitDocs);
     };
 
     const fetchDataForUser = async () => {
@@ -135,7 +153,8 @@ export default function Home() {
         const userSnapshot: DocumentSnapshot<any> = await getDoc(userDocRef);
         const habitsIdArray: string[] = userSnapshot.data()?.habitsId || [];
 
-        await Promise.all(habitsIdArray.map(fetchDataForHabit));
+        let hello = await Promise.all(habitsIdArray.map(fetchDataForHabit));
+        console.log("helo", hello);
       } catch (error: any) {
         console.error(`Error fetching user data: ${error.message}`);
         // setToast(`Error fetching user data: ${error.message}`, true, false);
@@ -156,7 +175,7 @@ export default function Home() {
         }
       });
     };
-  }, [uid, habitDocs]);
+  }, [uid]);
 
   const habitsSort = (filterBy: string) => {
     setLoading(true);
