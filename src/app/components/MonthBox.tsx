@@ -24,7 +24,8 @@ const MonthBox = ({
   const [completedDays, setCompletedDays] = useState(0);
   const [totalDays, setTotalDays] = useState(0);
 
-  let year = new Date().getFullYear();
+  let year =
+    month < 10 ? new Date().getFullYear() : new Date().getFullYear() - 1;
 
   useEffect(() => {
     const getHabitsData = async (habitId: string) => {

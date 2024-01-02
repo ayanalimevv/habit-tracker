@@ -100,7 +100,7 @@ const HabitBox = ({
             return (
               <MonthBox
                 //index start with 0 but we need from last month so -1
-                month={new Date().getMonth() - index - 1}
+                month={(new Date().getMonth() - index - 1 + 12) % 12}
                 habitId={habit.id}
                 key={habit.id}
                 setToast={setToast}
