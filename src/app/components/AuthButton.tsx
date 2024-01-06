@@ -6,10 +6,12 @@ const AuthButton = ({
   loading,
   onClickHandler,
   type,
+  authType = "Register",
 }: {
   loading: boolean;
   onClickHandler: React.Dispatch<React.SetStateAction<any>>;
   type: "mail" | "google";
+  authType?: "Login" | "Register";
 }) => {
   return (
     <div className="form-control">
@@ -24,7 +26,7 @@ const AuthButton = ({
               width={16}
               height={16}
             ></Image>
-            Register with Mail
+            {authType} with Mail
           </>
         ) : (
           <>
@@ -34,7 +36,7 @@ const AuthButton = ({
               width={16}
               height={16}
             ></Image>
-            Register with Google
+            {authType} with Google
           </>
         )}
       </button>

@@ -40,16 +40,22 @@ const Login = ({
       return;
     }
     const auth = getAuth(app);
+    console.log(email,password);
+    
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        console.log("here");
+        
         setToast("Logged In Successfully!", true, true);
         setLoading(false);
         router.push("/");
       })
       .catch((error) => {
+        console.log("there");
         const errorCode = error.code;
         const errorMessage = error.message;
+console.log(error);
 
         if (errorCode && errorCode.includes("/")) {
           const parts = errorCode.split("/");
@@ -177,12 +183,14 @@ const Login = ({
             onClickHandler={handleMailLogin}
             loading={loading}
             type="mail"
+            authType="Login"
           />
           <Divider text="OR" />
           <AuthButton
             onClickHandler={handleGoogleLogin}
             loading={loading}
             type="google"
+            authType="Login"
           />
         </form>
       </div>
